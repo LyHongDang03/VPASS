@@ -949,10 +949,10 @@
             /* ===== PRODUCT DETAIL OVERLAY ===== */
             .product-detail-view {
                 position: fixed;
-                top: 0;
+                top: 76px;
                 left: 0;
                 width: 100vw;
-                height: 100vh;
+                height: calc(100vh - 76px);
                 background: var(--white);
                 z-index: 1000;
                 overflow-y: auto;
@@ -972,7 +972,36 @@
             }
             .product-detail-view .detail-container,
             .checkout-view .detail-container {
+                position: relative;
                 padding-top: 0;
+            }
+            .product-detail-view .detail-back {
+                position: absolute;
+                top: 24px;
+                left: 24px;
+                z-index: 120;
+                margin: 0;
+                background: transparent;
+                padding: 0;
+            }
+            .product-detail-view .detail-back .btn-back {
+                width: 42px;
+                height: 42px;
+                border-radius: 999px;
+                justify-content: center;
+                padding: 0;
+                gap: 0;
+            }
+            .product-detail-view .detail-back .btn-back svg {
+                display: block;
+                width: 20px;
+                height: 20px;
+            }
+            .product-detail-view .detail-back .btn-back::before {
+                content: none;
+            }
+            .product-detail-view .detail-back .btn-back span {
+                display: none;
             }
             .detail-back {
                 position: sticky;
@@ -1017,6 +1046,7 @@
                 margin-bottom: 36px;
                 padding-bottom: 24px;
                 border-bottom: 1px solid var(--line);
+                padding-left: 86px;
             }
             .detail-country-flag {
                 font-size: 52px;
@@ -2199,10 +2229,10 @@
             /* ===== CHECKOUT OVERLAY VIEW ===== */
             .checkout-view {
                 position: fixed;
-                top: 0;
+                top: 76px;
                 left: 0;
                 width: 100vw;
-                height: 100vh;
+                height: calc(100vh - 76px);
                 background: var(--white);
                 z-index: 1100;
                 overflow-y: auto;
@@ -2485,6 +2515,20 @@
                         cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 .product-detail-view {
+                    top: 76px;
+                    height: calc(100vh - 76px);
+                    padding-bottom: 120px !important;
+                }
+                .product-detail-view .detail-back {
+                    top: 18px;
+                    left: 18px;
+                }
+                .detail-header-info {
+                    padding-left: 74px;
+                }
+                .checkout-view {
+                    top: 76px;
+                    height: calc(100vh - 76px);
                     padding-bottom: 120px !important;
                 }
             }
@@ -2507,7 +2551,7 @@
                 <div
                     class="brand"
                     style="cursor: pointer"
-                    onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                    onclick="goHomeFromLogo()"
                 >
                     <img
                         src="logo.png"
@@ -3013,17 +3057,16 @@
                 <div class="detail-back">
                     <button onclick="closeProductDetail()" class="btn-back">
                         <svg
-                            width="18"
-                            height="18"
+                            width="20"
+                            height="20"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2.5"
+                            stroke-width="2.6"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                         >
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
+                            <path d="M15 18l-6-6 6-6"></path>
                         </svg>
                         <span data-i18n="detail_back">Quay lại Trang chủ</span>
                     </button>
@@ -6001,6 +6044,12 @@
                 ) {
                     document.body.classList.remove('detail-open');
                 }
+            }
+
+            function goHomeFromLogo() {
+                closeCheckout();
+                closeProductDetail();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function setSimType(type) {
