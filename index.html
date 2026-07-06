@@ -68,8 +68,36 @@
     transform:rotate(45deg);
   }
   .navlinks{display:flex; gap:36px;}
-  .navlinks a{font-size:15px; font-weight:500; color:var(--ink-soft); transition:color .2s;}
+  .navlinks a{
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink-soft);
+    transition:color .2s;
+    position:relative;
+    padding:8px 0;
+  }
   .navlinks a:hover{color:var(--vnpt-blue-700);}
+  .navlinks a.active{
+    color:var(--vnpt-blue-700);
+    font-weight:600;
+  }
+  .navlinks a::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:2.5px;
+    background-color:var(--vnpt-blue-700);
+    transform:scaleX(0);
+    transform-origin:right;
+    transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius:2px;
+  }
+  .navlinks a.active::after{
+    transform:scaleX(1);
+    transform-origin:left;
+  }
   .nav-actions{display:flex; align-items:center; gap:18px;}
   .lang{font-size:14px; font-weight:600; color:var(--ink-soft); display:flex; gap:6px; align-items:center;}
   .btn{
@@ -1684,7 +1712,7 @@
         </svg>
         <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
       </div>
-      <a href="#destinations" class="btn btn-primary">Mua eSIM ngay</a>
+      <a href="#destinations" class="btn btn-primary">Mua ngay</a>
     </div>
   </div>
 </header>
@@ -1801,7 +1829,6 @@
     <div class="section-head">
       <span class="eyebrow">Chỉ 3 bước</span>
       <h2>Kết nối nhanh chóng, không cần ra cửa hàng</h2>
-      <p>Mua và kích hoạt eSIM VNPT hoàn toàn trực tuyến, sẵn sàng sử dụng trước cả khi bạn lên máy bay.</p>
     </div>
     <div class="steps">
       <div class="step">
@@ -1822,12 +1849,11 @@
     </div>
   </div>
 </section>
-<section class="section section-alt">
+<section class="section section-alt" id="support">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Vì sao chọn VNPT eSIM</span>
       <h2>Nền tảng viễn thông bạn tin tưởng</h2>
-      <p>Kế thừa hạ tầng và uy tín của VNPT, mang trải nghiệm kết nối quốc tế an toàn và ổn định.</p>
     </div>
     <div class="feat-grid">
       <div class="feat-card">
@@ -1850,18 +1876,6 @@
         <h4>Hỗ trợ 24/7</h4>
         <p>Đội ngũ hỗ trợ tiếng Việt luôn sẵn sàng trước, trong và sau chuyến đi.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="support">
-  <div class="wrap">
-    <div class="cta-banner">
-      <div>
-        <h3>Sẵn sàng cho chuyến đi tiếp theo?</h3>
-        <p>Chọn gói eSIM phù hợp và giữ kết nối liền mạch ở bất cứ đâu bạn đến.</p>
-      </div>
-      <a href="#destinations" class="btn btn-primary">Mua eSIM ngay</a>
     </div>
   </div>
 </section>
@@ -3854,6 +3868,42 @@ function filterHomepageCountries() {
 window.addEventListener('DOMContentLoaded', () => {
   allCountriesList = generateAllCountries();
   renderHomepageCountries();
+  
+  // Active state for header navigation links
+  const navLinks = document.querySelectorAll('.navlinks a');
+  const sections = document.querySelectorAll('section[id]');
+  
+  function updateActiveNav() {
+    let currentSectionId = '';
+    const scrollPosition = window.scrollY + 100; // offset for sticky header height
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSectionId = section.getAttribute('id');
+      }
+    });
+    
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${currentSectionId}`) {
+        link.classList.add('active');
+      }
+    });
+  }
+  
+  // Update active state when clicked immediately
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+  
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav(); // run on load
 });
 </script>
 </body>
