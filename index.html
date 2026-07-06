@@ -295,12 +295,12 @@
                 transform: translateY(-2px);
             }
             .btn-primary {
-                background: var(--accent-orange);
+                background: var(--vnpt-blue-600);
                 color: #fff;
-                box-shadow: 0 10px 24px -8px rgba(255, 138, 30, 0.55);
+                box-shadow: 0 10px 24px -8px rgba(15, 107, 184, 0.55);
             }
             .btn-primary:hover {
-                background: #ff7900;
+                background: var(--vnpt-blue-700);
             }
             .btn-outline {
                 background: transparent;
@@ -487,7 +487,7 @@
 
             /* ===== SECTION HEAD ===== */
             .section {
-                padding: 96px 0;
+                padding: 50px 0;
             }
             .section-head {
                 max-width: 640px;
@@ -508,8 +508,11 @@
             }
             .dest-head {
                 max-width: none;
-                margin: 0 0 40px;
-                text-align: left;
+                margin: 0 auto 40px;
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
             .dest-head h2 {
                 margin: 10px 0 10px;
@@ -517,33 +520,33 @@
             .dest-head .eyebrow {
                 margin-top: 4px;
             }
-            .dest-head .section-kicker {
+            .section-kicker {
                 display: inline-flex;
                 align-items: center;
-                gap: 8px;
-                padding: 7px 12px;
-                border-radius: 999px;
-                background: var(--vnpt-blue-100);
-                color: var(--vnpt-blue-700);
-                font-size: 11px;
+                gap: 6px;
+                padding: 6px 14px;
+                border-radius: 8px;
+                background: var(--vnpt-blue-600);
+                color: #ffffff;
+                font-size: 12px;
                 font-weight: 800;
-                letter-spacing: 0.14em;
+                letter-spacing: 0.08em;
                 text-transform: uppercase;
                 margin-bottom: 8px;
+                box-shadow: 0 4px 12px rgba(15, 107, 184, 0.35);
             }
-            .dest-head .section-kicker::before {
-                content: '';
-                width: 7px;
-                height: 7px;
-                border-radius: 50%;
-                background: var(--accent-orange);
-                flex-shrink: 0;
+            .section-kicker::before {
+                display: none;
             }
             .section-alt {
                 background: var(--vnpt-blue-050);
             }
 
             /* ===== DESTINATIONS ===== */
+            #destinations {
+                min-height: calc(100vh - 76px);
+            }
+
             .dest-grid {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
@@ -2703,8 +2706,10 @@
 
         <section class="section" id="destinations">
             <div class="wrap">
+                <div style="margin-bottom: 16px; text-align: left;">
+                    <span class="section-kicker" data-i18n="dest_kicker">BÁN SIM</span>
+                </div>
                 <div class="section-head dest-head">
-                    <span class="section-kicker">BÁN SIM</span>
                     <span class="eyebrow" data-i18n="dest_eyebrow"
                         >Điểm đến phổ biến</span
                     >
@@ -4611,26 +4616,160 @@
                     purchase_date_label: 'Ngày mua',
 
                     // Popular country names translation
-                    country_japan: 'Nhật Bản',
-                    country_korea: 'Hàn Quốc',
-                    country_thailand: 'Thái Lan',
-                    country_singapore: 'Singapore',
-                    country_usa: 'Mỹ',
-                    country_uk: 'Anh',
-                    country_australia: 'Úc',
-                    country_europe: 'Châu Âu',
-                    country_vietnam: 'Việt Nam',
-                    country_china: 'Trung Quốc',
-                    country_taiwan: 'Đài Loan',
-                    country_hongkong: 'Hồng Kông',
-                    country_france: 'Pháp',
-                    country_germany: 'Đức',
-                    country_italy: 'Ý',
-                    country_spain: 'Tây Ban Nha',
-                    country_switzerland: 'Thụy Sĩ',
-                    country_canada: 'Canada',
-                    country_brazil: 'Brazil',
-                },
+                dest_kicker: 'BÁN SIM',
+                country_japan: 'Nhật Bản',
+                country_korea: 'Hàn Quốc',
+                country_thailand: 'Thái Lan',
+                country_singapore: 'Singapore',
+                country_usa: 'Mỹ',
+                country_uk: 'Anh',
+                country_australia: 'Úc',
+                country_europe: 'Châu Âu',
+                country_vietnam: 'Việt Nam',
+                country_trungquoc: 'Trung Quốc',
+                country_dailoan: 'Đài Loan',
+                country_hongkong: 'Hồng Kông',
+                country_macau: 'Macau',
+                country_malaysia: 'Malaysia',
+                country_philippines: 'Philippines',
+                country_indonesia: 'Indonesia',
+                country_campuchia: 'Campuchia',
+                country_lao: 'Lào',
+                country_ando: 'Ấn Độ',
+                country_uaedubai: 'UAE (Dubai)',
+                country_thonhiky: 'Thổ Nhĩ Kỳ',
+                country_arapxeut: 'Ả Rập Xê Út',
+                country_israel: 'Israel',
+                country_qatar: 'Qatar',
+                country_kuwait: 'Kuwait',
+                country_bahrain: 'Bahrain',
+                country_oman: 'Oman',
+                country_jordan: 'Jordan',
+                country_kazakhstan: 'Kazakhstan',
+                country_uzbekistan: 'Uzbekistan',
+                country_srilanka: 'Sri Lanka',
+                country_maldives: 'Maldives',
+                country_nepal: 'Nepal',
+                country_bangladesh: 'Bangladesh',
+                country_mongco: 'Mông Cổ',
+                country_brunei: 'Brunei',
+                country_myanmar: 'Myanmar',
+                country_pakistan: 'Pakistan',
+                country_phap: 'Pháp',
+                country_duc: 'Đức',
+                country_y: 'Ý',
+                country_taybannha: 'Tây Ban Nha',
+                country_thuysi: 'Thụy Sĩ',
+                country_halan: 'Hà Lan',
+                country_bi: 'Bỉ',
+                country_ao: 'Áo',
+                country_danmach: 'Đan Mạch',
+                country_nauy: 'Na Uy',
+                country_thuydien: 'Thụy Điển',
+                country_phanlan: 'Phần Lan',
+                country_balan: 'Ba Lan',
+                country_bodaonha: 'Bồ Đào Nha',
+                country_hylap: 'Hy Lạp',
+                country_nga: 'Nga',
+                country_sec: 'Séc',
+                country_hungary: 'Hungary',
+                country_ireland: 'Ireland',
+                country_iceland: 'Iceland',
+                country_croatia: 'Croatia',
+                country_bulgaria: 'Bulgaria',
+                country_romania: 'Romania',
+                country_slovakia: 'Slovakia',
+                country_slovenia: 'Slovenia',
+                country_luxembourg: 'Luxembourg',
+                country_malta: 'Malta',
+                country_cyprus: 'Cyprus',
+                country_canada: 'Canada',
+                country_brazil: 'Brazil',
+                country_mexico: 'Mexico',
+                country_argentina: 'Argentina',
+                country_chile: 'Chile',
+                country_colombia: 'Colombia',
+                country_peru: 'Peru',
+                country_ecuador: 'Ecuador',
+                country_costarica: 'Costa Rica',
+                country_panama: 'Panama',
+                country_uruguay: 'Uruguay',
+                country_paraguay: 'Paraguay',
+                country_bolivia: 'Bolivia',
+                country_guatemala: 'Guatemala',
+                country_honduras: 'Honduras',
+                country_elsalvador: 'El Salvador',
+                country_nicaragua: 'Nicaragua',
+                country_jamaica: 'Jamaica',
+                country_dominicanrepublic: 'Dominican Republic',
+                country_bahamas: 'Bahamas',
+                country_newzealand: 'New Zealand',
+                country_fiji: 'Fiji',
+                country_papuanewguinea: 'Papua New Guinea',
+                country_samoa: 'Samoa',
+                country_tonga: 'Tonga',
+                country_vanuatu: 'Vanuatu',
+                country_solomonislands: 'Solomon Islands',
+                country_nauru: 'Nauru',
+                country_kiribati: 'Kiribati',
+                country_tuvalu: 'Tuvalu',
+                country_aicap: 'Ai Cập',
+                country_namphi: 'Nam Phi',
+                country_maroc: 'Ma-rốc',
+                country_kenya: 'Kenya',
+                country_nigeria: 'Nigeria',
+                country_ghana: 'Ghana',
+                country_tanzania: 'Tanzania',
+                country_mauritius: 'Mauritius',
+                country_tunisia: 'Tunisia',
+                country_algeria: 'Algeria',
+                country_ethiopia: 'Ethiopia',
+                country_uganda: 'Uganda',
+                country_madagascar: 'Madagascar',
+                country_seychelles: 'Seychelles',
+                country_senegal: 'Senegal',
+                country_lebanon: 'Lebanon',
+                country_monaco: 'Monaco',
+                country_andorra: 'Andorra',
+                country_georgia: 'Georgia',
+                country_azerbaijan: 'Azerbaijan',
+                country_armenia: 'Armenia',
+                country_morocco: 'Morocco',
+                country_libya: 'Libya',
+                country_sudan: 'Sudan',
+                country_somalia: 'Somalia',
+                country_angola: 'Angola',
+                country_zambia: 'Zambia',
+                country_zimbabwe: 'Zimbabwe',
+                country_botswana: 'Botswana',
+                country_namibia: 'Namibia',
+                country_mozambique: 'Mozambique',
+                country_reunion: 'Reunion',
+                country_mayotte: 'Mayotte',
+                country_comoros: 'Comoros',
+                country_capeverde: 'Cape Verde',
+                country_gambia: 'Gambia',
+                country_mali: 'Mali',
+                country_guinea: 'Guinea',
+                country_sierraleone: 'Sierra Leone',
+                country_liberia: 'Liberia',
+                country_burkinafaso: 'Burkina Faso',
+                country_niger: 'Niger',
+                country_benin: 'Benin',
+                country_togo: 'Togo',
+                country_cameroon: 'Cameroon',
+                country_gabon: 'Gabon',
+                country_congo: 'Congo',
+                country_drcongo: 'DR Congo',
+                country_chad: 'Chad',
+                country_centralafricanrepublic: 'Central African Republic',
+                country_equatorialguinea: 'Equatorial Guinea',
+                country_rwanda: 'Rwanda',
+                country_burundi: 'Burundi',
+                country_malawi: 'Malawi',
+                country_lesotho: 'Lesotho',
+                country_swaziland: 'Swaziland',
+            },
                 en: {
                     nav_destinations: 'Destinations',
                     nav_how: 'How It Works',
@@ -4872,26 +5011,160 @@
                     purchase_date_label: 'Purchase Date',
 
                     // Popular country names translation
-                    country_japan: 'Japan',
-                    country_korea: 'South Korea',
-                    country_thailand: 'Thailand',
-                    country_singapore: 'Singapore',
-                    country_usa: 'USA',
-                    country_uk: 'UK',
-                    country_australia: 'Australia',
-                    country_europe: 'Europe',
-                    country_vietnam: 'Vietnam',
-                    country_china: 'China',
-                    country_taiwan: 'Taiwan',
-                    country_hongkong: 'Hong Kong',
-                    country_france: 'France',
-                    country_germany: 'Germany',
-                    country_italy: 'Italy',
-                    country_spain: 'Spain',
-                    country_switzerland: 'Switzerland',
-                    country_canada: 'Canada',
-                    country_brazil: 'Brazil',
-                },
+                dest_kicker: 'SIM STORE',
+                country_japan: 'Japan',
+                country_korea: 'South Korea',
+                country_thailand: 'Thailand',
+                country_singapore: 'Singapore',
+                country_usa: 'USA',
+                country_uk: 'UK',
+                country_australia: 'Australia',
+                country_europe: 'Europe',
+                country_vietnam: 'Vietnam',
+                country_trungquoc: 'China',
+                country_dailoan: 'Taiwan',
+                country_hongkong: 'Hong Kong',
+                country_macau: 'Macau',
+                country_malaysia: 'Malaysia',
+                country_philippines: 'Philippines',
+                country_indonesia: 'Indonesia',
+                country_campuchia: 'Cambodia',
+                country_lao: 'Laos',
+                country_ando: 'India',
+                country_uaedubai: 'UAE (Dubai)',
+                country_thonhiky: 'Turkey',
+                country_arapxeut: 'Saudi Arabia',
+                country_israel: 'Israel',
+                country_qatar: 'Qatar',
+                country_kuwait: 'Kuwait',
+                country_bahrain: 'Bahrain',
+                country_oman: 'Oman',
+                country_jordan: 'Jordan',
+                country_kazakhstan: 'Kazakhstan',
+                country_uzbekistan: 'Uzbekistan',
+                country_srilanka: 'Sri Lanka',
+                country_maldives: 'Maldives',
+                country_nepal: 'Nepal',
+                country_bangladesh: 'Bangladesh',
+                country_mongco: 'Mongolia',
+                country_brunei: 'Brunei',
+                country_myanmar: 'Myanmar',
+                country_pakistan: 'Pakistan',
+                country_phap: 'France',
+                country_duc: 'Germany',
+                country_y: 'Italy',
+                country_taybannha: 'Spain',
+                country_thuysi: 'Switzerland',
+                country_halan: 'Netherlands',
+                country_bi: 'Belgium',
+                country_ao: 'Austria',
+                country_danmach: 'Denmark',
+                country_nauy: 'Norway',
+                country_thuydien: 'Sweden',
+                country_phanlan: 'Finland',
+                country_balan: 'Poland',
+                country_bodaonha: 'Portugal',
+                country_hylap: 'Greece',
+                country_nga: 'Russia',
+                country_sec: 'Czechia',
+                country_hungary: 'Hungary',
+                country_ireland: 'Ireland',
+                country_iceland: 'Iceland',
+                country_croatia: 'Croatia',
+                country_bulgaria: 'Bulgaria',
+                country_romania: 'Romania',
+                country_slovakia: 'Slovakia',
+                country_slovenia: 'Slovenia',
+                country_luxembourg: 'Luxembourg',
+                country_malta: 'Malta',
+                country_cyprus: 'Cyprus',
+                country_canada: 'Canada',
+                country_brazil: 'Brazil',
+                country_mexico: 'Mexico',
+                country_argentina: 'Argentina',
+                country_chile: 'Chile',
+                country_colombia: 'Colombia',
+                country_peru: 'Peru',
+                country_ecuador: 'Ecuador',
+                country_costarica: 'Costa Rica',
+                country_panama: 'Panama',
+                country_uruguay: 'Uruguay',
+                country_paraguay: 'Paraguay',
+                country_bolivia: 'Bolivia',
+                country_guatemala: 'Guatemala',
+                country_honduras: 'Honduras',
+                country_elsalvador: 'El Salvador',
+                country_nicaragua: 'Nicaragua',
+                country_jamaica: 'Jamaica',
+                country_dominicanrepublic: 'Dominican Republic',
+                country_bahamas: 'Bahamas',
+                country_newzealand: 'New Zealand',
+                country_fiji: 'Fiji',
+                country_papuanewguinea: 'Papua New Guinea',
+                country_samoa: 'Samoa',
+                country_tonga: 'Tonga',
+                country_vanuatu: 'Vanuatu',
+                country_solomonislands: 'Solomon Islands',
+                country_nauru: 'Nauru',
+                country_kiribati: 'Kiribati',
+                country_tuvalu: 'Tuvalu',
+                country_aicap: 'Egypt',
+                country_namphi: 'South Africa',
+                country_maroc: 'Morocco',
+                country_kenya: 'Kenya',
+                country_nigeria: 'Nigeria',
+                country_ghana: 'Ghana',
+                country_tanzania: 'Tanzania',
+                country_mauritius: 'Mauritius',
+                country_tunisia: 'Tunisia',
+                country_algeria: 'Algeria',
+                country_ethiopia: 'Ethiopia',
+                country_uganda: 'Uganda',
+                country_madagascar: 'Madagascar',
+                country_seychelles: 'Seychelles',
+                country_senegal: 'Senegal',
+                country_lebanon: 'Lebanon',
+                country_monaco: 'Monaco',
+                country_andorra: 'Andorra',
+                country_georgia: 'Georgia',
+                country_azerbaijan: 'Azerbaijan',
+                country_armenia: 'Armenia',
+                country_morocco: 'Morocco',
+                country_libya: 'Libya',
+                country_sudan: 'Sudan',
+                country_somalia: 'Somalia',
+                country_angola: 'Angola',
+                country_zambia: 'Zambia',
+                country_zimbabwe: 'Zimbabwe',
+                country_botswana: 'Botswana',
+                country_namibia: 'Namibia',
+                country_mozambique: 'Mozambique',
+                country_reunion: 'Reunion',
+                country_mayotte: 'Mayotte',
+                country_comoros: 'Comoros',
+                country_capeverde: 'Cape Verde',
+                country_gambia: 'Gambia',
+                country_mali: 'Mali',
+                country_guinea: 'Guinea',
+                country_sierraleone: 'Sierra Leone',
+                country_liberia: 'Liberia',
+                country_burkinafaso: 'Burkina Faso',
+                country_niger: 'Niger',
+                country_benin: 'Benin',
+                country_togo: 'Togo',
+                country_cameroon: 'Cameroon',
+                country_gabon: 'Gabon',
+                country_congo: 'Congo',
+                country_drcongo: 'DR Congo',
+                country_chad: 'Chad',
+                country_centralafricanrepublic: 'Central African Republic',
+                country_equatorialguinea: 'Equatorial Guinea',
+                country_rwanda: 'Rwanda',
+                country_burundi: 'Burundi',
+                country_malawi: 'Malawi',
+                country_lesotho: 'Lesotho',
+                country_swaziland: 'Swaziland',
+            },
             };
 
             let currentLang = 'vi';
