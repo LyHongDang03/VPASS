@@ -267,12 +267,26 @@
   .dest-card{
     background:#fff; border:1px solid var(--line); border-radius:var(--radius-md);
     padding:22px; transition:transform .2s, box-shadow .2s, border-color .2s; cursor:pointer;
+    position: relative;
   }
   .dest-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-card); border-color:var(--vnpt-blue-100);}
-  .dest-card .flag{font-size:32px; margin-bottom:14px;}
+  .dest-card .flag{width:44px; height:30px; margin-bottom:14px; border-radius:4px; overflow:hidden; display:flex; align-items:center; justify-content:flex-start;}
+  .dest-card .flag img{width:44px; height:30px; object-fit:cover; border-radius:4px; box-shadow:0 1px 4px rgba(0,0,0,0.15); display:block;}
   .dest-card h4{font-size:16px; font-weight:700; margin-bottom:4px;}
-  .dest-card .price{font-size:13px; color:var(--ink-soft);}
-  .dest-card .price b{color:var(--vnpt-blue-700); font-size:15px;}
+  .dest-card .price{font-size:13px; color:var(--ink-soft); display:flex; align-items:center; gap:4px; flex-wrap:wrap;}
+  .dest-discount-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 999px;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+    z-index: 5;
+  }
   .dest-more{text-align:center; margin-top:34px;}
 
   /* ===== STEPS ===== */
@@ -386,6 +400,7 @@
     .steps, .plans-grid, .test-grid{grid-template-columns:1fr;}
     .foot-grid{grid-template-columns:1fr 1fr;}
     .cta-banner{flex-direction:column; text-align:center; padding:44px 28px;}
+    .header-buy-btn{display:none;}
   }
 
   /* ===== PRODUCT DETAIL OVERLAY ===== */
@@ -410,12 +425,19 @@
   body.detail-open {
     overflow: hidden;
   }
-  .detail-container {
-    padding-top: 40px;
-    padding-bottom: 60px;
+  .product-detail-view .detail-container, .checkout-view .detail-container {
+    padding-top: 0;
   }
   .detail-back {
-    margin-bottom: 28px;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 100;
+    padding: 16px 24px;
+    margin: 0 -24px 28px -24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
   }
   .btn-back {
     display:inline-flex; align-items:center; gap:8px;
@@ -467,6 +489,52 @@
   }
   .detail-section {
     margin-bottom: 36px;
+  }
+  .landmark-card {
+    width: 100%;
+    height: 160px;
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .landmark-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card);
+  }
+  .landmark-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .landmark-card:hover img {
+    transform: scale(1.05);
+  }
+  .landmark-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(6, 43, 82, 0.8) 0%, rgba(6, 43, 82, 0.2) 60%, transparent 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    color: #fff;
+    text-align: left;
+  }
+  .landmark-name {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .landmark-desc {
+    font-size: 12.5px;
+    color: #c9dcee;
+    opacity: 0.9;
   }
   .section-title {
     font-size: 16px;
@@ -1779,6 +1847,71 @@
     color: #fff !important;
     box-shadow: var(--shadow-soft);
   }
+  @media (max-width: 480px) {
+    .tab-btn {
+      font-size: 13px !important;
+      padding: 10px 8px !important;
+    }
+  }
+
+  /* Mobile Sticky Action Bar */
+  .detail-mobile-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid var(--line);
+    padding: 12px 20px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1050;
+    box-shadow: 0 -8px 24px rgba(10, 61, 112, 0.08);
+  }
+  .mobile-action-price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+  }
+  .mobile-action-price {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--vnpt-blue-900);
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+  .mobile-action-meta {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  .mobile-action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+  }
+  @media (max-width: 980px) {
+    body.detail-open .detail-mobile-action-bar {
+      display: flex;
+      animation: slideUpActionBar 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .product-detail-view {
+      padding-bottom: 120px !important;
+    }
+  }
+  @keyframes slideUpActionBar {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .detail-mobile-action-bar.hidden-due-to-summary {
+    display: none !important;
+  }
 </style>
 </head>
 <body>
@@ -1818,78 +1951,11 @@
         </svg>
         <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
       </div>
-      <a href="#destinations" class="btn btn-primary" data-i18n="buy_now">Mua ngay</a>
+      <a href="#destinations" class="btn btn-primary header-buy-btn" data-i18n="buy_now">Mua ngay</a>
     </div>
   </div>
 </header>
 
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-      <div>
-        <span class="eyebrow" style="background:rgba(255,255,255,.12); color:#eaf4fc;">VNPT Global Connectivity</span>
-        <h1 data-i18n="hero_title">Kết nối toàn cầu<br>chỉ trong <span>2 phút</span></h1>
-        <p class="lead" data-i18n="hero_lead">eSIM VNPT phủ sóng hơn 150 quốc gia. Nhận mã QR qua email, kích hoạt tức thì — không cần đổi SIM vật lý, không lo roaming đắt đỏ.</p>
-
-       
-
-        <div class="stat-row">
-          <div class="stat"><b>150+</b><span data-i18n="stat_countries">Quốc gia &amp; vùng lãnh thổ</span></div>
-          <div class="stat"><b data-i18n="stat_activation_time">2 phút</b><span data-i18n="stat_activation_desc">Kích hoạt sau thanh toán</span></div>
-          <div class="stat"><b>24/7</b><span data-i18n="stat_support">Hỗ trợ tiếng Việt</span></div>
-        </div>
-      </div>
-
-      <div class="globe-wrap">
-        <svg viewBox="0 0 520 520" width="480" height="480">
-          <defs>
-            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#1487d9" stop-opacity="0.35"/>
-              <stop offset="100%" stop-color="#1487d9" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="sphere" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#1487d9"/>
-              <stop offset="100%" stop-color="#062b52"/>
-            </linearGradient>
-          </defs>
-          <circle cx="260" cy="260" r="240" fill="url(#glow)"/>
-          <circle cx="260" cy="260" r="150" fill="url(#sphere)" opacity="0.9"/>
-          <g stroke="rgba(255,255,255,0.35)" fill="none" stroke-width="1">
-            <ellipse cx="260" cy="260" rx="150" ry="60"/>
-            <ellipse cx="260" cy="260" rx="150" ry="110"/>
-            <ellipse cx="260" cy="260" rx="60" ry="150"/>
-            <ellipse cx="260" cy="260" rx="110" ry="150"/>
-          </g>
-          <g class="spin-slow">
-            <g stroke="#ff8a1e" stroke-width="1.6" fill="none" opacity="0.75">
-              <circle cx="260" cy="260" r="200" stroke-dasharray="2 10"/>
-            </g>
-            <circle cx="260" cy="60" r="5" fill="#fff" class="pulse"/>
-            <circle cx="460" cy="260" r="5" fill="#fff" class="pulse"/>
-            <circle cx="260" cy="460" r="5" fill="#fff" class="pulse"/>
-            <circle cx="60" cy="260" r="5" fill="#fff" class="pulse"/>
-            <circle cx="118" cy="118" r="5" fill="#fff" class="pulse"/>
-            <circle cx="402" cy="118" r="5" fill="#fff" class="pulse"/>
-            <circle cx="402" cy="402" r="5" fill="#fff" class="pulse"/>
-            <circle cx="118" cy="402" r="5" fill="#fff" class="pulse"/>
-          </g>
-          <g stroke="#ff8a1e" stroke-width="1.5" fill="none" stroke-dasharray="4 6" opacity="0.8" class="dash">
-            <path d="M260 260 L260 60"/>
-            <path d="M260 260 L460 260"/>
-            <path d="M260 260 L260 460"/>
-            <path d="M260 260 L60 260"/>
-            <path d="M260 260 L118 118"/>
-            <path d="M260 260 L402 118"/>
-            <path d="M260 260 L402 402"/>
-            <path d="M260 260 L118 402"/>
-          </g>
-          <circle cx="260" cy="260" r="10" fill="#fff"/>
-          <circle cx="260" cy="260" r="18" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.6"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="section" id="destinations">
   <div class="wrap">
@@ -2056,12 +2122,19 @@
           </div>
         </div>
         
+        <!-- Địa danh nổi tiếng (Chỉ hiện 1 banner ảnh) -->
+        <div class="detail-section" id="landmarkSection" style="margin-bottom: 28px;">
+          <div id="landmarkList">
+            <!-- Dynamic JS -->
+          </div>
+        </div>
+
         <!-- Chọn loại SIM -->
         <div class="detail-section">
           <h3 class="section-title" data-i18n="detail_step1">1. Chọn loại SIM</h3>
           <div class="option-tabs sim-type-tabs">
-            <button class="tab-btn active" id="btnSimEsim" onclick="setSimType('esim')" data-i18n="sim_esim">eSIM (Nhận qua Email)</button>
-            <button class="tab-btn" id="btnSimPhysical" onclick="setSimType('physical')" data-i18n="sim_physical">SIM Vật lý (Giao tận nơi)</button>
+            <button class="tab-btn active" id="btnSimEsim" onclick="setSimType('esim')" data-i18n="sim_esim">eSIM</button>
+            <button class="tab-btn" id="btnSimPhysical" onclick="setSimType('physical')" data-i18n="sim_physical">SIM Vật lý</button>
           </div>
           <div class="sim-type-desc" id="simTypeDesc">eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.</div>
         </div>
@@ -2089,37 +2162,6 @@
           <div class="pills-grid" id="dayPills">
             <!-- Sẽ được sinh tự động bằng JS -->
           </div>
-        </div>
-
-        <!-- Thông số kỹ thuật -->
-        <div class="detail-section">
-          <h3 class="section-title" data-i18n="specs_title">Thông số kỹ thuật</h3>
-          <table class="specs-table">
-            <tr>
-              <td data-i18n="spec_carrier">Nhà mạng đối tác</td>
-              <td><strong id="specCarrier">Softbank / Docomo</strong></td>
-            </tr>
-            <tr>
-              <td data-i18n="spec_speed">Tốc độ</td>
-              <td><strong id="specSpeed">4G LTE / 5G cực nhanh</strong></td>
-            </tr>
-            <tr>
-              <td data-i18n="spec_hotspot">Chia sẻ Hotspot</td>
-              <td><strong data-i18n="spec_hotspot_val">Có hỗ trợ (Tethering OK)</strong></td>
-            </tr>
-            <tr>
-              <td data-i18n="spec_calls">Cuộc gọi & SMS</td>
-              <td><strong data-i18n="spec_calls_val">Chỉ Data (Không kèm SĐT nghe gọi)</strong></td>
-            </tr>
-            <tr>
-              <td data-i18n="spec_activation">Hình thức kích hoạt</td>
-              <td><strong data-i18n="spec_activation_val">Tự động kết nối mạng tại nước sở tại</strong></td>
-            </tr>
-            <tr>
-              <td data-i18n="spec_deadline">Hạn kích hoạt</td>
-              <td><strong data-i18n="spec_deadline_val">90 ngày kể từ ngày mua hàng</strong></td>
-            </tr>
-          </table>
         </div>
 
         <!-- Tabs Hướng dẫn -->
@@ -2156,6 +2198,37 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Thông số kỹ thuật -->
+        <div class="detail-section">
+          <h3 class="section-title" data-i18n="specs_title">Thông số kỹ thuật</h3>
+          <table class="specs-table">
+            <tr>
+              <td data-i18n="spec_carrier">Nhà mạng đối tác</td>
+              <td><strong id="specCarrier">Softbank / Docomo</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="spec_speed">Tốc độ</td>
+              <td><strong id="specSpeed">4G LTE / 5G cực nhanh</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="spec_hotspot">Chia sẻ Hotspot</td>
+              <td><strong data-i18n="spec_hotspot_val">Có hỗ trợ (Tethering OK)</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="spec_calls">Cuộc gọi & SMS</td>
+              <td><strong data-i18n="spec_calls_val">Chỉ Data (Không kèm SĐT nghe gọi)</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="spec_activation">Hình thức kích hoạt</td>
+              <td><strong data-i18n="spec_activation_val">Tự động kết nối mạng tại nước sở tại</strong></td>
+            </tr>
+            <tr>
+              <td data-i18n="spec_deadline">Hạn kích hoạt</td>
+              <td><strong data-i18n="spec_deadline_val">90 ngày kể từ ngày mua hàng</strong></td>
+            </tr>
+          </table>
         </div>
       </div>
       
@@ -2513,6 +2586,26 @@
 <!-- Toast thông báo nhanh -->
 <div class="toast-notif" id="toastNotif">Đã sao chép vào bộ nhớ tạm</div>
 
+<!-- Mobile Sticky Action Bar -->
+<div class="detail-mobile-action-bar" id="detailMobileActionBar">
+  <div class="mobile-action-price-info">
+    <div class="mobile-action-price" id="mobileActionTotal">189.000₫</div>
+    <div class="mobile-action-meta" id="mobileActionMeta">eSIM Nhật Bản - 7 Ngày</div>
+  </div>
+  <div class="mobile-action-buttons">
+    <button class="btn btn-outline mobile-btn-cart" onclick="addToCart(false)" title="Thêm vào giỏ hàng" style="padding: 12px; width: 48px; height: 48px; border-radius: 50%; min-width: auto; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-color: var(--vnpt-blue-600); color: var(--vnpt-blue-700);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+    </button>
+    <button class="btn btn-primary mobile-btn-buy" onclick="addToCart(true)" style="padding: 0 24px; height: 48px; font-size: 14px; border-radius: 24px; font-weight: 700; flex: none; width: 130px;">
+      <span data-i18n="buy_now">Mua ngay</span>
+    </button>
+  </div>
+</div>
+
 <!-- ===== SCRIPTS LOGIC ===== -->
 <script>
 const translations = {
@@ -2581,9 +2674,10 @@ const translations = {
     foot_proto: "Prototype — không phải trang chính thức",
     
     detail_back: "Quay lại Trang chủ",
+    detail_landmarks: "Địa danh nổi tiếng",
     detail_step1: "1. Chọn loại SIM",
-    sim_esim: "eSIM (Nhận qua Email)",
-    sim_physical: "SIM Vật lý (Giao tận nơi)",
+    sim_esim: "eSIM",
+    sim_physical: "SIM Vật lý",
     detail_step2_plan: "2. Chọn loại gói cước",
     plan_daily: "Data theo ngày",
     plan_fixed: "Data trọn gói",
@@ -2800,9 +2894,10 @@ const translations = {
     foot_proto: "Prototype — not an official page",
     
     detail_back: "Back to Homepage",
+    detail_landmarks: "Famous Landmarks",
     detail_step1: "1. Select SIM Type",
-    sim_esim: "eSIM (Receive via Email)",
-    sim_physical: "Physical SIM (Delivery)",
+    sim_esim: "eSIM",
+    sim_physical: "Physical SIM",
     detail_step2_plan: "2. Select Plan Type",
     plan_daily: "Daily Data",
     plan_fixed: "Fixed Data",
@@ -3043,8 +3138,8 @@ function updateLanguageUI() {
         : 'Connect to ' + currentCountry.carrier + ' high-speed network in ' + localizedCountryName + '.';
     }
     
-    document.getElementById('summaryFlag').innerText = currentCountry.flag;
-    document.getElementById('detailFlag').innerText = currentCountry.flag;
+    document.getElementById('summaryFlag').innerHTML = flagImg(currentCountry.id, 38);
+    document.getElementById('detailFlag').innerHTML = flagImg(currentCountry.id, 48);
     document.getElementById('specCarrier').innerText = currentCountry.carrier + (selectedSimType === 'physical' ? (currentLang === 'vi' ? ' (Khay SIM vật lý)' : ' (Physical SIM tray)') : '');
     document.getElementById('specSpeed').innerText = currentCountry.speed;
     
@@ -3065,6 +3160,7 @@ function updateLanguageUI() {
     renderDataOptions();
     renderDaysOptions();
     calculateTotal();
+    renderLandmarks(currentCountry);
   }
 }
 
@@ -3254,6 +3350,70 @@ let isDirectCheckout = false;
 let checkoutDiscountAmount = 0;
 let appliedCheckoutPromoCode = '';
 
+// ===== FLAG IMAGE HELPER =====
+const countryIsoMap = {
+  japan: 'jp', korea: 'kr', thailand: 'th', singapore: 'sg',
+  usa: 'us', uk: 'gb', australia: 'au', europe: 'eu',
+  vietnam: 'vn', china: 'cn', taiwan: 'tw', hongkong: 'hk',
+  macau: 'mo', malaysia: 'my', philippines: 'ph', indonesia: 'id',
+  campuchia: 'kh', lao: 'la', andod: 'in', uae: 'ae', dubai: 'ae',
+  tho: 'tr', turkey: 'tr', arabxeut: 'sa', saudi: 'sa', israel: 'il',
+  qatar: 'qa', kuwait: 'kw', bahrain: 'bh', oman: 'om', jordan: 'jo',
+  kazakhstan: 'kz', uzbekistan: 'uz', srilanka: 'lk', maldives: 'mv',
+  nepal: 'np', bangladesh: 'bd', mongolia: 'mn', mongco: 'mn',
+  brunei: 'bn', myanmar: 'mm', pakistan: 'pk',
+  phap: 'fr', france: 'fr', duc: 'de', germany: 'de', y: 'it', italy: 'it',
+  taybanhnha: 'es', spain: 'es', thuysi: 'ch', switzerland: 'ch',
+  halan: 'nl', netherlands: 'nl', bi: 'be', belgium: 'be',
+  ao: 'at', austria: 'at', danmach: 'dk', denmark: 'dk',
+  nauy: 'no', norway: 'no', thuyden: 'se', sweden: 'se',
+  phanlan: 'fi', finland: 'fi', balan: 'pl', poland: 'pl',
+  bodaonha: 'pt', portugal: 'pt', hylap: 'gr', greece: 'gr',
+  nga: 'ru', russia: 'ru', sec: 'cz', czech: 'cz', hungary: 'hu',
+  ireland: 'ie', iceland: 'is', croatia: 'hr', bulgaria: 'bg',
+  romania: 'ro', slovakia: 'sk', slovenia: 'si', luxembourg: 'lu',
+  malta: 'mt', cyprus: 'cy', monaco: 'mc', andorra: 'ad',
+  georgia: 'ge', azerbaijan: 'az', armenia: 'am', lebanon: 'lb',
+  canada: 'ca', brazil: 'br', mexico: 'mx', argentina: 'ar',
+  chile: 'cl', colombia: 'co', peru: 'pe', ecuador: 'ec',
+  costarica: 'cr', panama: 'pa', uruguay: 'uy', paraguay: 'py',
+  bolivia: 'bo', guatemala: 'gt', honduras: 'hn', elsalvador: 'sv',
+  nicaragua: 'ni', jamaica: 'jm', dominicanrepublic: 'do', bahamas: 'bs',
+  newzealand: 'nz', fiji: 'fj', papuanewguinea: 'pg', samoa: 'ws',
+  tonga: 'to', vanuatu: 'vu', solomonislands: 'sb', nauru: 'nr',
+  kiribati: 'ki', tuvalu: 'tv',
+  aicap: 'eg', egypt: 'eg', namphi: 'za', southafrica: 'za',
+  maroc: 'ma', morocco: 'ma', kenya: 'ke', nigeria: 'ng', ghana: 'gh',
+  tanzania: 'tz', mauritius: 'mu', tunisia: 'tn', algeria: 'dz',
+  ethiopia: 'et', uganda: 'ug', madagascar: 'mg', seychelles: 'sc',
+  senegal: 'sn', gambia: 'gm', mali: 'ml', guinea: 'gn',
+  sierraleone: 'sl', liberia: 'lr', cotedivoire: 'ci', burkinafaso: 'bf',
+  niger: 'ne', benin: 'bj', togo: 'tg', cameroon: 'cm', gabon: 'ga',
+  congo: 'cg', drcongo: 'cd', chad: 'td', centralafricanrepublic: 'cf',
+  equatorialguinea: 'gq', rwanda: 'rw', burundi: 'bi', malawi: 'mw',
+  lesotho: 'ls', swaziland: 'sz', angola: 'ao', zambia: 'zm',
+  zimbabwe: 'zw', botswana: 'bw', namibia: 'na', mozambique: 'mz',
+  reunion: 're', mayotte: 'yt', comoros: 'km', capeverde: 'cv',
+  libya: 'ly', sudan: 'sd', somalia: 'so'
+};
+
+function getFlagIso(countryId) {
+  if (!countryId) return null;
+  const id = countryId.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (countryIsoMap[id]) return countryIsoMap[id];
+  // Try partial match for 2-char ids
+  if (id.length === 2) return id;
+  return null;
+}
+
+function flagImg(countryId, size) {
+  const w = size || 36;
+  const h = Math.round(w * 0.67);
+  const iso = getFlagIso(countryId);
+  if (!iso) return '<span style="font-size:24px;">🌐</span>';
+  return `<img src="https://flagcdn.com/${iso}.svg" width="${w}" height="${h}" alt="${countryId}" style="border-radius:3px; object-fit:cover; box-shadow:0 1px 4px rgba(0,0,0,0.15); display:block;" onerror="this.onerror=null; this.style.display='none';">`;
+}
+
 function formatVND(amount) {
   if (currentLang === 'en') {
     return amount.toLocaleString('en-US') + ' ₫';
@@ -3301,6 +3461,114 @@ function getQrSvgMarkup(type, amount, ref) {
   `;
 }
 
+function getLandmarksForCountry(country) {
+  const presetLandmarks = {
+    japan: [
+      { nameVi: 'Núi Phú Sĩ', nameEn: 'Mount Fuji', descVi: 'Biểu tượng linh thiêng của Nhật Bản', descEn: 'Sacred symbol of Japan', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Đền Fushimi Inari', nameEn: 'Fushimi Inari Shrine', descVi: 'Đường hầm nghìn cổng Torii đỏ rực', descEn: 'Thousands of vermilion torii gates', image: 'https://images.unsplash.com/photo-1478147427282-58a87a120781?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Chùa Vàng Kinkaku-ji', nameEn: 'Kinkaku-ji Temple', descVi: 'Ngôi chùa dát vàng soi bóng bên hồ', descEn: 'Iconic Zen temple covered in gold leaf', image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=400&q=80' }
+    ],
+    korea: [
+      { nameVi: 'Cung điện Gyeongbokgung', nameEn: 'Gyeongbokgung Palace', descVi: 'Cung điện lớn nhất triều đại Joseon', descEn: 'Largest palace of the Joseon Dynasty', image: 'https://images.unsplash.com/photo-1538669715515-5c37747535e6?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Tháp N Seoul', nameEn: 'N Seoul Tower', descVi: 'Ngắm toàn cảnh thủ đô từ trên cao', descEn: 'Panoramic views of Seoul skyline', image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Đảo Jeju', nameEn: 'Jeju Island', descVi: 'Hòn đảo thiên đường thiên nhiên', descEn: 'Volcanic island with scenic landscapes', image: 'https://images.unsplash.com/photo-1542259005453-df5b43790b1e?auto=format&fit=crop&w=400&q=80' }
+    ],
+    thailand: [
+      { nameVi: 'Chùa Phật Ngọc', nameEn: 'Wat Phra Kaew', descVi: 'Ngôi chùa linh thiêng nhất Thái Lan', descEn: 'Most sacred Buddhist temple in Thailand', image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Cung điện Hoàng gia', nameEn: 'Grand Palace', descVi: 'Tuyệt tác kiến trúc cổ kính', descEn: 'Spectacular royal palace complex', image: 'https://images.unsplash.com/photo-1563492065566-5085ad6b4028?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Đảo Phi Phi', nameEn: 'Phi Phi Islands', descVi: 'Vùng vịnh xanh ngọc trong vắt', descEn: 'World-famous tropical islands', image: 'https://images.unsplash.com/photo-1528181304800-2f7735262e72?auto=format&fit=crop&w=400&q=80' }
+    ],
+    singapore: [
+      { nameVi: 'Gardens by the Bay', nameEn: 'Gardens by the Bay', descVi: 'Công viên sinh thái tương lai', descEn: 'Futuristic botanical garden with Supertrees', image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Marina Bay Sands', nameEn: 'Marina Bay Sands', descVi: 'Tổ hợp nghỉ dưỡng biểu tượng', descEn: 'Iconic luxury hotel and infinity pool', image: 'https://images.unsplash.com/photo-1504701954957-2390f806e9b4?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Tượng Merlion', nameEn: 'Merlion Park', descVi: 'Biểu tượng huyền thoại Sư tử biển', descEn: 'Famous half-fish, half-lion statue landmark', image: 'https://images.unsplash.com/photo-1558005530-d7c0cb9847ef?auto=format&fit=crop&w=400&q=80' }
+    ],
+    usa: [
+      { nameVi: 'Tượng Nữ thần Tự do', nameEn: 'Statue of Liberty', descVi: 'Biểu tượng tự do của nước Mỹ', descEn: 'Universal symbol of freedom and democracy', image: 'https://images.unsplash.com/photo-1508849789987-4e5333c12b78?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Hẻm núi Grand Canyon', nameEn: 'Grand Canyon', descVi: 'Kỳ quan kiến tạo thiên nhiên vĩ đại', descEn: 'Majestic volcanic and red rock canyon', image: 'https://images.unsplash.com/photo-1615551043360-33de8b5f410c?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Quảng trường Thời đại', nameEn: 'Times Square', descVi: 'Trái tim rực rỡ của New York', descEn: 'Brightly illuminated hub of Broadway theater', image: 'https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=400&q=80' }
+    ],
+    uk: [
+      { nameVi: 'Tháp Big Ben', nameEn: 'Big Ben', descVi: 'Tháp đồng hồ lịch sử bên sông Thames', descEn: 'Historic clock tower and parliament landmark', image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Vòng quay London Eye', nameEn: 'London Eye', descVi: 'Vòng quay ngắm toàn cảnh London', descEn: 'Giant Ferris wheel on the South Bank', image: 'https://images.unsplash.com/photo-1508333706533-1ab43ecb1606?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Bãi đá cổ Stonehenge', nameEn: 'Stonehenge', descVi: 'Di tích tiền sử huyền bí', descEn: 'Prehistoric monument in Wiltshire', image: 'https://images.unsplash.com/photo-1599818817409-e85d99cb13f4?auto=format&fit=crop&w=400&q=80' }
+    ],
+    australia: [
+      { nameVi: 'Nhà hát Opera Sydney', nameEn: 'Sydney Opera House', descVi: 'Tuyệt tác kiến trúc hình cánh buồm', descEn: 'World-famous performing arts center', image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Rạn san hô Great Barrier', nameEn: 'Great Barrier Reef', descVi: 'Hệ sinh thái san hô lớn nhất thế giới', descEn: 'Largest living structure on Earth', image: 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Cầu Cảng Sydney', nameEn: 'Sydney Harbour Bridge', descVi: 'Cây cầu thép nhộn nhịp biểu tượng', descEn: 'Iconic steel arch bridge', image: 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?auto=format&fit=crop&w=400&q=80' }
+    ],
+    europe: [
+      { nameVi: 'Tháp Eiffel (Pháp)', nameEn: 'Eiffel Tower (France)', descVi: 'Biểu tượng lãng mạn của kinh đô ánh sáng', descEn: 'Romantic landmark in Paris, France', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Đấu trường Colosseum (Ý)', nameEn: 'Colosseum (Italy)', descVi: 'Kỳ quan lịch sử của Đế chế La Mã', descEn: 'Grand ancient amphitheater in Rome, Italy', image: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Kênh đào Venice (Ý)', nameEn: 'Venice Canals (Italy)', descVi: 'Vẻ đẹp sông nước cổ kính trữ tình', descEn: 'Romantic waterways and gondolas in Italy', image: 'https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=400&q=80' }
+    ]
+  };
+
+  if (presetLandmarks[country.id]) {
+    return presetLandmarks[country.id];
+  }
+  
+  const reg = country.region || 'asia';
+  const name = country.name || 'Quốc gia';
+  
+  if (reg === 'asia') {
+    return [
+      { nameVi: `Cảnh quan tại ${name}`, nameEn: `Sceneries in ${name}`, descVi: 'Khám phá nét đẹp văn hóa châu Á độc đáo', descEn: 'Explore unique Asian cultural beauty', image: 'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Điểm đến ẩm thực', nameEn: 'Culinary Hotspots', descVi: 'Thưởng thức phong vị địa phương trứ danh', descEn: 'Savor famous local tastes', image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=400&q=80' }
+    ];
+  } else if (reg === 'europe') {
+    return [
+      { nameVi: `Khu phố cổ tại ${name}`, nameEn: `Old Town in ${name}`, descVi: 'Khám phá các di sản kiến trúc châu Âu cổ kính', descEn: 'Discover ancient European architectural heritage', image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Phong cảnh thanh bình', nameEn: 'Scenic Landscapes', descVi: 'Thư giãn với thiên nhiên tuyệt mỹ', descEn: 'Relax with breathtaking nature', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80' }
+    ];
+  } else if (reg === 'america') {
+    return [
+      { nameVi: `Kỳ quan tại ${name}`, nameEn: `Wonders of ${name}`, descVi: 'Những điểm tham quan nổi bật và năng động', descEn: 'Stunning and vibrant sights to visit', image: 'https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Khu vui chơi giải trí', nameEn: 'Entertainment Hubs', descVi: 'Trải nghiệm du lịch sống động khó quên', descEn: 'Experience unforgettable live tourism', image: 'https://images.unsplash.com/photo-1513829096999-4978602297f7?auto=format&fit=crop&w=400&q=80' }
+    ];
+  } else if (reg === 'oceania') {
+    return [
+      { nameVi: `Bờ biển tuyệt đẹp tại ${name}`, nameEn: `Stunning Coastline in ${name}`, descVi: 'Bãi biển cát trắng nắng vàng ngập tràn', descEn: 'Golden sun and pristine white sandy beaches', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Thiên nhiên hoang dã', nameEn: 'Wild Nature', descVi: 'Khám phá hệ động thực vật độc bản', descEn: 'Explore unique flora and fauna', image: 'https://images.unsplash.com/photo-1528181304800-2f7735262e72?auto=format&fit=crop&w=400&q=80' }
+    ];
+  } else if (reg === 'africa') {
+    return [
+      { nameVi: `Kỳ quan thiên nhiên tại ${name}`, nameEn: `Natural Wonders in ${name}`, descVi: 'Vẻ đẹp hoang sơ bí ẩn của lục địa đen', descEn: 'Wild mysterious beauty of the African continent', image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=400&q=80' },
+      { nameVi: 'Hành trình Safari hoang dã', nameEn: 'Wild Safari Journey', descVi: 'Hòa mình cùng thế giới động vật tự nhiên', descEn: 'Immerse in the natural wildlife world', image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=400&q=80' }
+    ];
+  }
+  
+  return [
+    { nameVi: `Tham quan ${name}`, nameEn: `Visit ${name}`, descVi: 'Khám phá các điểm check-in hấp dẫn hàng đầu', descEn: 'Discover the top tourist attractions', image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=400&q=80' }
+  ];
+}
+
+function renderLandmarks(country) {
+  const container = document.getElementById('landmarkList');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  const landmarks = getLandmarksForCountry(country);
+  if (landmarks && landmarks.length > 0) {
+    const item = landmarks[0];
+    const card = document.createElement('div');
+    card.className = 'landmark-card';
+    
+    const name = currentLang === 'vi' ? item.nameVi : item.nameEn;
+    const desc = currentLang === 'vi' ? item.descVi : item.descEn;
+    
+    card.innerHTML = `
+      <img src="${item.image}" alt="${name}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&q=80';">
+      <div class="landmark-overlay">
+        <div class="landmark-name">${name}</div>
+        <div class="landmark-desc" title="${desc}">${desc}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  }
+}
+
 function openProductDetail(countryId) {
   let country = countriesData[countryId];
   if (!country) {
@@ -3308,11 +3576,13 @@ function openProductDetail(countryId) {
     const found = (typeof allCountriesList !== 'undefined') ? allCountriesList.find(c => c.id === countryId) : null;
     const flag = found ? found.flag : '🌐';
     const name = found ? found.name : (countryId.charAt(0).toUpperCase() + countryId.slice(1));
+    const region = found ? found.region : 'asia';
     
     country = {
       id: countryId,
       name: name,
       flag: flag,
+      region: region,
       carrier: 'Mạng đối tác quốc tế (VNPT Partner)',
       speed: '4G LTE / 5G cực nhanh',
       basePriceDaily: 35000,
@@ -3333,6 +3603,18 @@ function openProductDetail(countryId) {
   currentCountry = country;
   if (!currentCountry) return;
   
+  if (!currentCountry.discountPercent) {
+    currentCountry.discountPercent = (currentCountry.id === 'japan') ? 15 
+                            : (currentCountry.id === 'korea') ? 20 
+                            : (currentCountry.id === 'thailand') ? 30 
+                            : (currentCountry.id === 'singapore') ? 10 
+                            : (currentCountry.id === 'usa') ? 15 
+                            : (currentCountry.id === 'uk') ? 20 
+                            : (currentCountry.id === 'australia') ? 25 
+                            : (currentCountry.id === 'europe') ? 10 
+                            : (currentCountry.id.charCodeAt(0) % 3 + 1) * 10;
+  }
+  
   planType = 'daily';
   quantity = 1;
   selectedSimType = 'esim';
@@ -3340,19 +3622,22 @@ function openProductDetail(countryId) {
   // Update SIM Type tabs state
   document.getElementById('btnSimEsim').classList.add('active');
   document.getElementById('btnSimPhysical').classList.remove('active');
-  document.getElementById('simTypeDesc').innerText = currentLang === 'vi' 
-    ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
-    : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
+  const simTypeDescEl = document.getElementById('simTypeDesc');
+  if (simTypeDescEl) {
+    simTypeDescEl.innerText = currentLang === 'vi' 
+      ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
+      : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
+  }
 
   // Update country details UI
   const localizedCountryName = t('country_' + currentCountry.id, currentCountry.name);
-  document.getElementById('detailFlag').innerText = currentCountry.flag;
+  document.getElementById('detailFlag').innerHTML = flagImg(currentCountry.id, 48);
   document.getElementById('detailTitle').innerText = 'eSIM ' + localizedCountryName;
   document.getElementById('detailSubtitle').innerText = currentLang === 'vi'
     ? 'Kết nối mạng ' + currentCountry.carrier + ' tốc độ cao tại ' + localizedCountryName + '.'
     : 'Connect to ' + currentCountry.carrier + ' high-speed network in ' + localizedCountryName + '.';
   
-  document.getElementById('summaryFlag').innerText = currentCountry.flag;
+  document.getElementById('summaryFlag').innerHTML = flagImg(currentCountry.id, 38);
   document.getElementById('summaryTitle').innerText = 'eSIM ' + localizedCountryName;
   
   document.getElementById('specCarrier').innerText = currentCountry.carrier;
@@ -3360,6 +3645,9 @@ function openProductDetail(countryId) {
   
   // Setup plan view
   setPlanType('daily');
+  
+  // Render landmarks
+  renderLandmarks(currentCountry);
   
   // Open details page sliding view
   const detailView = document.getElementById('productDetailView');
@@ -3387,18 +3675,22 @@ function setSimType(type) {
   if (type === 'esim') {
     btnEsim.classList.add('active');
     btnPhysical.classList.remove('active');
-    desc.innerText = currentLang === 'vi' 
-      ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
-      : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
+    if (desc) {
+      desc.innerText = currentLang === 'vi' 
+        ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
+        : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
+    }
     specCarrier.innerText = currentCountry.carrier;
     summaryTitle.innerText = 'eSIM ' + t('country_' + currentCountry.id, currentCountry.name);
     detailTitle.innerText = 'eSIM ' + t('country_' + currentCountry.id, currentCountry.name);
   } else {
     btnEsim.classList.remove('active');
     btnPhysical.classList.add('active');
-    desc.innerText = currentLang === 'vi'
-      ? 'SIM Vật lý: Giao hàng tận nơi qua Bưu điện (VNPost) trong 1-3 ngày làm việc. Lắp thẻ SIM vào khay SIM điện thoại để kết nối.'
-      : 'Physical SIM: Delivery via Post (VNPost) in 1-3 business days. Insert the SIM card into your phone to connect.';
+    if (desc) {
+      desc.innerText = currentLang === 'vi'
+        ? 'SIM Vật lý: Giao hàng tận nơi qua Bưu điện (VNPost) trong 1-3 ngày làm việc. Lắp thẻ SIM vào khay SIM điện thoại để kết nối.'
+        : 'Physical SIM: Delivery via Post (VNPost) in 1-3 business days. Insert the SIM card into your phone to connect.';
+    }
     specCarrier.innerText = currentCountry.carrier + (currentLang === 'vi' ? ' (Khay SIM vật lý)' : ' (Physical SIM tray)');
     summaryTitle.innerText = (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ') + t('country_' + currentCountry.id, currentCountry.name);
     detailTitle.innerText = (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ') + t('country_' + currentCountry.id, currentCountry.name);
@@ -3537,12 +3829,36 @@ function calculateTotal() {
       : `Fixed Data: ${optName} (${selectedDays} Days)`;
   }
   
-  document.getElementById('summaryUnitPrice').innerText = formatVND(unitPrice);
+  const discount = currentCountry.discountPercent || 0;
+  const originalUnitPrice = unitPrice;
+  const discountedUnitPrice = Math.round(unitPrice * (1 - discount / 100));
+  
+  if (discount > 0) {
+    document.getElementById('summaryUnitPrice').innerHTML = `<span style="text-decoration: line-through; color: var(--ink-soft); font-size: 13px; font-weight: normal; margin-right: 6px;">${formatVND(originalUnitPrice)}</span><span style="color: #ef4444; font-weight: 700;">${formatVND(discountedUnitPrice)}</span>`;
+  } else {
+    document.getElementById('summaryUnitPrice').innerText = formatVND(originalUnitPrice);
+  }
+  
   document.getElementById('summaryDetails').innerText = detailsText;
   document.getElementById('qtyVal').innerText = quantity;
   
-  const subtotal = unitPrice * quantity;
-  document.getElementById('summaryTotal').innerText = formatVND(subtotal);
+  const subtotalOriginal = originalUnitPrice * quantity;
+  const subtotalDiscounted = Math.round(subtotalOriginal * (1 - discount / 100));
+  
+  if (discount > 0) {
+    document.getElementById('summaryTotal').innerHTML = `<span style="text-decoration: line-through; color: var(--ink-soft); font-size: 16px; font-weight: 500; margin-right: 8px;">${formatVND(subtotalOriginal)}</span><span style="color: #ef4444; font-weight: 800;">${formatVND(subtotalDiscounted)}</span>`;
+  } else {
+    document.getElementById('summaryTotal').innerText = formatVND(subtotalOriginal);
+  }
+  
+  const mobileActionTotal = document.getElementById('mobileActionTotal');
+  const mobileActionMeta = document.getElementById('mobileActionMeta');
+  if (mobileActionTotal && mobileActionMeta) {
+    mobileActionTotal.innerText = formatVND(discount > 0 ? subtotalDiscounted : subtotalOriginal);
+    const prefix = selectedSimType === 'esim' ? 'eSIM ' : (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ');
+    const localizedCountryName = t('country_' + currentCountry.id, currentCountry.name);
+    mobileActionMeta.innerText = `${prefix}${localizedCountryName} - ${selectedDays} ${currentLang === 'vi' ? 'Ngày' : 'Days'}`;
+  }
 }
 
 /* ===== CART LOGIC FUNCTIONS ===== */
@@ -3556,6 +3872,9 @@ function addToCart(checkoutImmediately) {
       ? Math.round(currentCountry.basePriceDaily * dataOpt.multiplier * selectedDays)
       : dataOpt.basePrice;
       
+    const discount = currentCountry.discountPercent || 0;
+    const finalUnitPrice = Math.round(unitPrice * (1 - discount / 100));
+    
     const itemObj = {
       cartId: currentCountry.id + '_' + planType + '_' + selectedDataOptionId + '_' + selectedDays + '_' + selectedSimType,
       countryId: currentCountry.id,
@@ -3566,7 +3885,9 @@ function addToCart(checkoutImmediately) {
       dataOptionId: selectedDataOptionId,
       dataOptionName: dataOpt.name,
       days: selectedDays,
-      unitPrice: unitPrice,
+      originalUnitPrice: unitPrice,
+      unitPrice: finalUnitPrice,
+      discountPercent: discount,
       quantity: quantity
     };
     
@@ -3668,11 +3989,16 @@ function renderCartDrawer() {
       : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`;
       
     card.innerHTML = `
-      <div class="cart-item-flag">${item.flag}</div>
+      <div class="cart-item-flag">${flagImg(item.countryId, 36)}</div>
       <div class="cart-item-info">
         <div class="cart-item-title" style="display:flex; align-items:center;">SIM ${t('country_' + item.countryId, item.countryName)} ${typeBadge}</div>
         <div class="cart-item-meta">${detailsDesc}</div>
-        <div class="cart-item-price">${formatVND(item.unitPrice)}</div>
+        <div class="cart-item-price">
+          ${item.discountPercent > 0 
+            ? `<span style="text-decoration: line-through; color: var(--ink-soft); font-size: 12px; margin-right: 6px;">${formatVND(item.originalUnitPrice)}</span><span style="color: #ef4444; font-weight: 700;">${formatVND(item.unitPrice)}</span>`
+            : formatVND(item.unitPrice)
+          }
+        </div>
         <div class="cart-item-actions">
           <div class="cart-qty-ctrl">
             <button onclick="updateCartQty('${item.cartId}', -1)">-</button>
@@ -3831,13 +4157,18 @@ function renderCheckout() {
         : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`;
         
       row.innerHTML = `
-        <div class="flag">${item.flag}</div>
+        <div class="flag" style="display:flex;align-items:center;justify-content:center;width:42px;height:42px;background:#fff;border-radius:50%;box-shadow:var(--shadow-soft);overflow:hidden;flex-shrink:0;">${flagImg(item.countryId, 42)}</div>
         <div class="checkout-item-details">
           <div class="checkout-item-name" style="display:flex; align-items:center;">SIM ${t('country_' + item.countryId, item.countryName)} ${typeBadge}</div>
           <div class="checkout-item-spec">${detailsDesc}</div>
         </div>
         <div class="checkout-item-qtyprice">
-          <div>${formatVND(item.unitPrice)}</div>
+          <div>
+            ${item.discountPercent > 0 
+              ? `<span style="text-decoration: line-through; color: var(--ink-soft); font-size: 11px; margin-right: 4px; font-weight: normal;">${formatVND(item.originalUnitPrice)}</span><span style="color: #ef4444;">${formatVND(item.unitPrice)}</span>`
+              : formatVND(item.unitPrice)
+            }
+          </div>
           <div style="font-size:12px; color:var(--ink-soft); font-weight:500; margin-top:2px;">SL: ${item.quantity}</div>
         </div>
       `;
@@ -4123,7 +4454,7 @@ function openSuccessModal() {
             </div>
           </div>
           <div class="esim-details-box">
-            <p><strong>${t('destination_label')}:</strong> ${item.flag} ${localizedCountryName}</p>
+            <p><strong>${t('destination_label')}:</strong> <span style="display:inline-flex;align-items:center;gap:6px;vertical-align:middle;">${flagImg(item.countryId, 22)} ${localizedCountryName}</span></p>
             <p><strong>${t('plan_label')}:</strong> ${localizedPlanName} - ${item.days} ${daysLabel}</p>
             <p><strong>${t('manual_lpa_label')}:</strong> <code onclick="copyText(this.innerText)">LPA:1$vnpt.prod-dp.com$VNPT-${item.countryId.toUpperCase()}-${randomCode}</code></p>
             <p style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">${t('purchase_date_label')}: ${dateStr}</p>
@@ -4525,10 +4856,32 @@ function renderHomepageCountries() {
       
     const displayPrice = currentLang === 'vi' ? c.price : c.price.replace('Từ ', 'From ').replace('₫', ' ₫');
     
+    const discount = (c.id === 'japan') ? 15 
+                   : (c.id === 'korea') ? 20 
+                   : (c.id === 'thailand') ? 30 
+                   : (c.id === 'singapore') ? 10 
+                   : (c.id === 'usa') ? 15 
+                   : (c.id === 'uk') ? 20 
+                   : (c.id === 'australia') ? 25 
+                   : (c.id === 'europe') ? 10 
+                   : (c.id.charCodeAt(0) % 3 + 1) * 10;
+                   
+    let priceHtml = displayPrice;
+    const priceNumMatch = c.price.match(/\d+(\.\d+)?/g);
+    if (priceNumMatch) {
+      const originalPriceNum = parseInt(priceNumMatch[0].replace(/\./g, ''));
+      const discountedPriceNum = Math.round(originalPriceNum * (1 - discount / 100) / 1000) * 1000;
+      const formattedOriginal = originalPriceNum.toLocaleString('vi-VN') + '₫';
+      const formattedDiscounted = discountedPriceNum.toLocaleString('vi-VN') + '₫';
+      const label = currentLang === 'vi' ? 'Từ ' : 'From ';
+      priceHtml = `${label}<span style="text-decoration: line-through; color: var(--ink-soft); font-size: 12px; margin-right: 4px;">${formattedOriginal}</span><span style="color: #ef4444; font-weight: 800; font-size: 14.5px;">${formattedDiscounted}</span>`;
+    }
+    
     card.innerHTML = `
-      <div class="flag">${c.flag}</div>
+      <div class="dest-discount-badge">-${discount}%</div>
+      <div class="flag">${flagImg(c.id, 44)}</div>
       <h4>${displayTitle}</h4>
-      <div class="price">${displayPrice}</div>
+      <div class="price">${priceHtml}</div>
     `;
     container.appendChild(card);
   });
@@ -4570,6 +4923,26 @@ function filterHomepageCountries() {
 window.addEventListener('DOMContentLoaded', () => {
   allCountriesList = generateAllCountries();
   renderHomepageCountries();
+  
+  // Hide sticky mobile action bar when the main order summary card is in view
+  const orderSummaryCard = document.querySelector('#productDetailView .order-summary-card');
+  if (orderSummaryCard) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const mobileActionBar = document.getElementById('detailMobileActionBar');
+        if (mobileActionBar) {
+          if (entry.isIntersecting) {
+            mobileActionBar.classList.add('hidden-due-to-summary');
+          } else {
+            mobileActionBar.classList.remove('hidden-due-to-summary');
+          }
+        }
+      });
+    }, {
+      threshold: 0.05
+    });
+    observer.observe(orderSummaryCard);
+  }
   
   // Active state for header navigation links
   const navLinks = document.querySelectorAll('.navlinks a');
