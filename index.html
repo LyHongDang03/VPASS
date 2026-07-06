@@ -506,6 +506,39 @@
                 font-size: 16px;
                 line-height: 1.6;
             }
+            .dest-head {
+                max-width: none;
+                margin: 0 0 40px;
+                text-align: left;
+            }
+            .dest-head h2 {
+                margin: 10px 0 10px;
+            }
+            .dest-head .eyebrow {
+                margin-top: 4px;
+            }
+            .dest-head .section-kicker {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 7px 12px;
+                border-radius: 999px;
+                background: var(--vnpt-blue-100);
+                color: var(--vnpt-blue-700);
+                font-size: 11px;
+                font-weight: 800;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+            }
+            .dest-head .section-kicker::before {
+                content: '';
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--accent-orange);
+                flex-shrink: 0;
+            }
             .section-alt {
                 background: var(--vnpt-blue-050);
             }
@@ -2670,7 +2703,8 @@
 
         <section class="section" id="destinations">
             <div class="wrap">
-                <div class="section-head">
+                <div class="section-head dest-head">
+                    <span class="section-kicker">BÁN SIM</span>
                     <span class="eyebrow" data-i18n="dest_eyebrow"
                         >Điểm đến phổ biến</span
                     >
