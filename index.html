@@ -99,7 +99,95 @@
     transform-origin:left;
   }
   .nav-actions{display:flex; align-items:center; gap:18px;}
-  .lang{font-size:14px; font-weight:600; color:var(--ink-soft); display:flex; gap:6px; align-items:center;}
+  /* Language Dropdown Select */
+  .lang-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .lang-trigger {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+  .lang-trigger:hover, .lang-dropdown.active .lang-trigger {
+    border-color: var(--vnpt-blue-500);
+    color: var(--vnpt-blue-700);
+    background: var(--vnpt-blue-050);
+  }
+  .lang-flag-img {
+    width: 22px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    display: inline-block;
+  }
+  .lang-arrow {
+    transition: transform 0.2s ease;
+    color: var(--ink-soft);
+  }
+  .lang-dropdown.active .lang-arrow {
+    transform: rotate(180deg);
+  }
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+    width: 150px;
+    padding: 6px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+  }
+  .lang-dropdown.active .lang-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .lang-option {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .lang-option:hover {
+    background: var(--vnpt-blue-100);
+    color: var(--vnpt-blue-800);
+  }
+  .lang-option.selected {
+    background: var(--vnpt-blue-050);
+    color: var(--vnpt-blue-700);
+    font-weight: 600;
+  }
+  .option-flag-img {
+    width: 22px;
+    height: 15px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    display: inline-block;
+  }
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:8px;
     font-weight:700; font-size:15px; border-radius:999px; border:none; cursor:pointer;
@@ -1698,13 +1786,30 @@
   <div class="wrap nav">
     <div class="brand"><img src="logo.png" alt="PASSV Logo" style="height: 44px; width: auto; object-fit: contain; display: block;"></div>
     <nav class="navlinks">
-      <a href="#destinations">Điểm đến</a>
-      <a href="#how">Hướng dẫn</a>
-      <a href="#support">Hỗ trợ</a>
+      <a href="#destinations" data-i18n="nav_destinations">Điểm đến</a>
+      <a href="#how" data-i18n="nav_how">Hướng dẫn</a>
+      <a href="#support" data-i18n="nav_support">Hỗ trợ</a>
     </nav>
     <div class="nav-actions">
-      <span class="lang">🌐 VI</span>
-      <div class="cart-btn" onclick="openCartDrawer()" title="Xem giỏ hàng">
+      <!-- Language Dropdown Selector -->
+      <div class="lang-dropdown" id="langDropdown">
+        <button class="lang-trigger" onclick="toggleLangDropdown(event)" id="langTrigger">
+          <img src="https://flagcdn.com/vn.svg" alt="Vietnam Flag" class="lang-flag-img" id="langSelectedFlag">
+          <span class="lang-text" id="langSelectedText">VI</span>
+          <svg class="lang-arrow" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 1 5 5 9 1"></polyline>
+          </svg>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <div class="lang-option selected" onclick="changeLanguage('vi', event)" id="langOptVi">
+            <img src="https://flagcdn.com/vn.svg" alt="Vietnam Flag" class="option-flag-img"> Tiếng Việt
+          </div>
+          <div class="lang-option" onclick="changeLanguage('en', event)" id="langOptEn">
+            <img src="https://flagcdn.com/gb.svg" alt="UK Flag" class="option-flag-img"> English
+          </div>
+        </div>
+      </div>
+      <div class="cart-btn" onclick="openCartDrawer()" data-i18n-title="view_cart" title="Xem giỏ hàng">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
@@ -1712,7 +1817,7 @@
         </svg>
         <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
       </div>
-      <a href="#destinations" class="btn btn-primary">Mua ngay</a>
+      <a href="#destinations" class="btn btn-primary" data-i18n="buy_now">Mua ngay</a>
     </div>
   </div>
 </header>
@@ -1722,15 +1827,15 @@
     <div class="hero-grid">
       <div>
         <span class="eyebrow" style="background:rgba(255,255,255,.12); color:#eaf4fc;">VNPT Global Connectivity</span>
-        <h1>Kết nối toàn cầu<br>chỉ trong <span>2 phút</span></h1>
-        <p class="lead">eSIM VNPT phủ sóng hơn 150 quốc gia. Nhận mã QR qua email, kích hoạt tức thì — không cần đổi SIM vật lý, không lo roaming đắt đỏ.</p>
+        <h1 data-i18n="hero_title">Kết nối toàn cầu<br>chỉ trong <span>2 phút</span></h1>
+        <p class="lead" data-i18n="hero_lead">eSIM VNPT phủ sóng hơn 150 quốc gia. Nhận mã QR qua email, kích hoạt tức thì — không cần đổi SIM vật lý, không lo roaming đắt đỏ.</p>
 
        
 
         <div class="stat-row">
-          <div class="stat"><b>150+</b><span>Quốc gia &amp; vùng lãnh thổ</span></div>
-          <div class="stat"><b>2 phút</b><span>Kích hoạt sau thanh toán</span></div>
-          <div class="stat"><b>24/7</b><span>Hỗ trợ tiếng Việt</span></div>
+          <div class="stat"><b>150+</b><span data-i18n="stat_countries">Quốc gia &amp; vùng lãnh thổ</span></div>
+          <div class="stat"><b data-i18n="stat_activation_time">2 phút</b><span data-i18n="stat_activation_desc">Kích hoạt sau thanh toán</span></div>
+          <div class="stat"><b>24/7</b><span data-i18n="stat_support">Hỗ trợ tiếng Việt</span></div>
         </div>
       </div>
 
@@ -1788,8 +1893,8 @@
 <section class="section" id="destinations">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Điểm đến phổ biến</span>
-      <h2>Chọn quốc gia bạn sắp ghé thăm</h2>
+      <span class="eyebrow" data-i18n="dest_eyebrow">Điểm đến phổ biến</span>
+      <h2 data-i18n="dest_title">Chọn quốc gia bạn sắp ghé thăm</h2>
     </div>
     
     <!-- Search and Filter controls directly on homepage -->
@@ -1799,16 +1904,16 @@
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="homepageSearchInput" placeholder="Bạn sắp đi đâu? Nhập tên quốc gia (ví dụ: Pháp, Nhật Bản, Canada...)" oninput="filterHomepageCountries()">
+        <input type="text" id="homepageSearchInput" data-i18n-placeholder="search_placeholder" placeholder="Bạn sắp đi đâu? Nhập tên quốc gia (ví dụ: Pháp, Nhật Bản, Canada...)" oninput="filterHomepageCountries()">
       </div>
       
       <div class="option-tabs" style="margin-top: 20px;">
-        <button class="tab-btn active" id="btnHomeFilterAll" onclick="filterHomepageRegion('all')">Tất cả</button>
-        <button class="tab-btn" id="btnHomeFilterAsia" onclick="filterHomepageRegion('asia')">Châu Á</button>
-        <button class="tab-btn" id="btnHomeFilterEurope" onclick="filterHomepageRegion('europe')">Châu Âu</button>
-        <button class="tab-btn" id="btnHomeFilterAmerica" onclick="filterHomepageRegion('america')">Châu Mỹ</button>
-        <button class="tab-btn" id="btnHomeFilterOceania" onclick="filterHomepageRegion('oceania')">Châu Úc</button>
-        <button class="tab-btn" id="btnHomeFilterAfrica" onclick="filterHomepageRegion('africa')">Châu Phi</button>
+        <button class="tab-btn active" id="btnHomeFilterAll" onclick="filterHomepageRegion('all')" data-i18n="tab_all">Tất cả</button>
+        <button class="tab-btn" id="btnHomeFilterAsia" onclick="filterHomepageRegion('asia')" data-i18n="tab_asia">Châu Á</button>
+        <button class="tab-btn" id="btnHomeFilterEurope" onclick="filterHomepageRegion('europe')" data-i18n="tab_europe">Châu Âu</button>
+        <button class="tab-btn" id="btnHomeFilterAmerica" onclick="filterHomepageRegion('america')" data-i18n="tab_america">Châu Mỹ</button>
+        <button class="tab-btn" id="btnHomeFilterOceania" onclick="filterHomepageRegion('oceania')" data-i18n="tab_oceania">Châu Úc</button>
+        <button class="tab-btn" id="btnHomeFilterAfrica" onclick="filterHomepageRegion('africa')" data-i18n="tab_africa">Châu Phi</button>
       </div>
     </div>
 
@@ -1827,24 +1932,24 @@
 <section class="section section-alt" id="how">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Chỉ 3 bước</span>
-      <h2>Kết nối nhanh chóng, không cần ra cửa hàng</h2>
+      <span class="eyebrow" data-i18n="steps_eyebrow">Chỉ 3 bước</span>
+      <h2 data-i18n="steps_title">Kết nối nhanh chóng, không cần ra cửa hàng</h2>
     </div>
     <div class="steps">
       <div class="step">
         <div class="num">1</div>
-        <h4>Chọn gói &amp; thanh toán</h4>
-        <p>Chọn quốc gia hoặc khu vực, gói dung lượng phù hợp và thanh toán an toàn qua thẻ hoặc ví điện tử.</p>
+        <h4 data-i18n="step1_title">Chọn gói &amp; thanh toán</h4>
+        <p data-i18n="step1_desc">Chọn quốc gia hoặc khu vực, gói dung lượng phù hợp và thanh toán an toàn qua thẻ hoặc ví điện tử.</p>
       </div>
       <div class="step">
         <div class="num">2</div>
-        <h4>Nhận mã QR qua email</h4>
-        <p>Mã QR và hướng dẫn cài đặt được gửi ngay vào email của bạn, không phải chờ giao SIM vật lý.</p>
+        <h4 data-i18n="step2_title">Nhận mã QR qua email</h4>
+        <p data-i18n="step2_desc">Mã QR và hướng dẫn cài đặt được gửi ngay vào email của bạn, không phải chờ giao SIM vật lý.</p>
       </div>
       <div class="step">
         <div class="num">3</div>
-        <h4>Quét mã &amp; sử dụng</h4>
-        <p>Quét mã QR bằng điện thoại, bật eSIM khi hạ cánh và kết nối ngay với mạng data tốc độ cao.</p>
+        <h4 data-i18n="step3_title">Quét mã &amp; sử dụng</h4>
+        <p data-i18n="step3_desc">Quét mã QR bằng điện thoại, bật eSIM khi hạ cánh và kết nối ngay với mạng data tốc độ cao.</p>
       </div>
     </div>
   </div>
@@ -1852,29 +1957,29 @@
 <section class="section section-alt" id="support">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Vì sao chọn VNPT eSIM</span>
-      <h2>Nền tảng viễn thông bạn tin tưởng</h2>
+      <span class="eyebrow" data-i18n="feat_eyebrow">Vì sao chọn VNPT eSIM</span>
+      <h2 data-i18n="feat_title">Nền tảng viễn thông bạn tin tưởng</h2>
     </div>
     <div class="feat-grid">
       <div class="feat-card">
         <div class="feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
-        <h4>Kích hoạt tức thì</h4>
-        <p>Nhận mã QR ngay sau khi thanh toán, sẵn sàng dùng chỉ trong 2 phút.</p>
+        <h4 data-i18n="feat1_title">Kích hoạt tức thì</h4>
+        <p data-i18n="feat1_desc">Nhận mã QR ngay sau khi thanh toán, sẵn sàng dùng chỉ trong 2 phút.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z" stroke="currentColor" stroke-width="1.8"/></svg></div>
-        <h4>Phủ sóng 150+ quốc gia</h4>
-        <p>Một nền tảng, kết nối xuyên suốt hành trình của bạn ở mọi châu lục.</p>
+        <h4 data-i18n="feat2_title">Phủ sóng 150+ quốc gia</h4>
+        <p data-i18n="feat2_desc">Một nền tảng, kết nối xuyên suốt hành trình của bạn ở mọi châu lục.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
-        <h4>Bảo mật chuẩn VNPT</h4>
-        <p>Hạ tầng và quy trình bảo mật kế thừa từ nhà mạng viễn thông quốc gia.</p>
+        <h4 data-i18n="feat3_title">Bảo mật chuẩn VNPT</h4>
+        <p data-i18n="feat3_desc">Hạ tầng và quy trình bảo mật kế thừa từ nhà mạng viễn thông quốc gia.</p>
       </div>
       <div class="feat-card">
         <div class="feat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.5 8.5 0 11-4-7.2M21 4v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <h4>Hỗ trợ 24/7</h4>
-        <p>Đội ngũ hỗ trợ tiếng Việt luôn sẵn sàng trước, trong và sau chuyến đi.</p>
+        <h4 data-i18n="feat4_title">Hỗ trợ 24/7</h4>
+        <p data-i18n="feat4_desc">Đội ngũ hỗ trợ tiếng Việt luôn sẵn sàng trước, trong và sau chuyến đi.</p>
       </div>
     </div>
   </div>
@@ -1885,42 +1990,42 @@
     <div class="foot-grid">
       <div class="foot-brand">
         <div class="brand"><img src="logo.png" alt="PASSV Logo" style="height: 44px; width: auto; object-fit: contain; display: block; filter: brightness(0) invert(1);"></div>
-        <p>Giải pháp eSIM &amp; SIM quốc tế từ Tập đoàn VNPT — giữ bạn kết nối ở hơn 150 quốc gia trên toàn thế giới.</p>
+        <p data-i18n="foot_desc">Giải pháp eSIM &amp; SIM quốc tế từ Tập đoàn VNPT — giữ bạn kết nối ở hơn 150 quốc gia trên toàn thế giới.</p>
         <div class="socials">
           <a href="#">f</a><a href="#">ig</a><a href="#">yt</a>
         </div>
       </div>
       <div class="foot-col">
-        <h5>Sản phẩm</h5>
+        <h5 data-i18n="foot_col1_title">Sản phẩm</h5>
         <ul>
-          <li><a href="#destinations">Gói theo quốc gia</a></li>
-          <li><a href="#destinations">Gói khu vực</a></li>
-          <li><a href="#destinations">Gói toàn cầu</a></li>
-          <li><a href="#">Dành cho doanh nghiệp</a></li>
+          <li><a href="#destinations" data-i18n="foot_col1_item1">Gói theo quốc gia</a></li>
+          <li><a href="#destinations" data-i18n="foot_col1_item2">Gói khu vực</a></li>
+          <li><a href="#destinations" data-i18n="foot_col1_item3">Gói toàn cầu</a></li>
+          <li><a href="#" data-i18n="foot_col1_item4">Dành cho doanh nghiệp</a></li>
         </ul>
       </div>
       <div class="foot-col">
-        <h5>Hỗ trợ</h5>
+        <h5 data-i18n="foot_col2_title">Hỗ trợ</h5>
         <ul>
-          <li><a href="#">Hướng dẫn cài đặt</a></li>
-          <li><a href="#">Câu hỏi thường gặp</a></li>
-          <li><a href="#">Kiểm tra thiết bị tương thích</a></li>
-          <li><a href="#">Liên hệ tổng đài</a></li>
+          <li><a href="#" data-i18n="foot_col2_item1">Hướng dẫn cài đặt</a></li>
+          <li><a href="#" data-i18n="foot_col2_item2">Câu hỏi thường gặp</a></li>
+          <li><a href="#" data-i18n="foot_col2_item3">Kiểm tra thiết bị tương thích</a></li>
+          <li><a href="#" data-i18n="foot_col2_item4">Liên hệ tổng đài</a></li>
         </ul>
       </div>
       <div class="foot-col">
-        <h5>Công ty</h5>
+        <h5 data-i18n="foot_col3_title">Công ty</h5>
         <ul>
-          <li><a href="#">Về VNPT eSIM</a></li>
-          <li><a href="#">Điều khoản dịch vụ</a></li>
-          <li><a href="#">Chính sách bảo mật</a></li>
-          <li><a href="#">Tuyển dụng</a></li>
+          <li><a href="#" data-i18n="foot_col3_item1">Về VNPT eSIM</a></li>
+          <li><a href="#" data-i18n="foot_col3_item2">Điều khoản dịch vụ</a></li>
+          <li><a href="#" data-i18n="foot_col3_item3">Chính sách bảo mật</a></li>
+          <li><a href="#" data-i18n="foot_col3_item4">Tuyển dụng</a></li>
         </ul>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© 2026 VNPT eSIM. Thuộc Tập đoàn Bưu chính Viễn thông Việt Nam.</span>
-      <span>Prototype — không phải trang chính thức</span>
+      <span data-i18n="foot_copy">© 2026 VNPT eSIM. Thuộc Tập đoàn Bưu chính Viễn thông Việt Nam.</span>
+      <span data-i18n="foot_proto">Prototype — không phải trang chính thức</span>
     </div>
   </div>
 </footer>
@@ -1935,7 +2040,7 @@
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        Quay lại Trang chủ
+        <span data-i18n="detail_back">Quay lại Trang chủ</span>
       </button>
     </div>
     
@@ -1952,26 +2057,26 @@
         
         <!-- Chọn loại SIM -->
         <div class="detail-section">
-          <h3 class="section-title">1. Chọn loại SIM</h3>
+          <h3 class="section-title" data-i18n="detail_step1">1. Chọn loại SIM</h3>
           <div class="option-tabs sim-type-tabs">
-            <button class="tab-btn active" id="btnSimEsim" onclick="setSimType('esim')">eSIM (Nhận qua Email)</button>
-            <button class="tab-btn" id="btnSimPhysical" onclick="setSimType('physical')">SIM Vật lý (Giao tận nơi)</button>
+            <button class="tab-btn active" id="btnSimEsim" onclick="setSimType('esim')" data-i18n="sim_esim">eSIM (Nhận qua Email)</button>
+            <button class="tab-btn" id="btnSimPhysical" onclick="setSimType('physical')" data-i18n="sim_physical">SIM Vật lý (Giao tận nơi)</button>
           </div>
           <div class="sim-type-desc" id="simTypeDesc">eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.</div>
         </div>
 
         <!-- Chọn loại gói cước -->
         <div class="detail-section">
-          <h3 class="section-title">2. Chọn loại gói cước</h3>
+          <h3 class="section-title" data-i18n="detail_step2_plan">2. Chọn loại gói cước</h3>
           <div class="option-tabs">
-            <button class="tab-btn active" id="tabDaily" onclick="setPlanType('daily')">Data theo ngày</button>
-            <button class="tab-btn" id="tabFixed" onclick="setPlanType('fixed')">Data trọn gói</button>
+            <button class="tab-btn active" id="tabDaily" onclick="setPlanType('daily')" data-i18n="plan_daily">Data theo ngày</button>
+            <button class="tab-btn" id="tabFixed" onclick="setPlanType('fixed')" data-i18n="plan_fixed">Data trọn gói</button>
           </div>
         </div>
         
         <!-- Chọn dung lượng -->
         <div class="detail-section">
-          <h3 class="section-title">2. Chọn dung lượng Data</h3>
+          <h3 class="section-title" data-i18n="detail_step2_data">2. Chọn dung lượng Data</h3>
           <div class="pills-grid" id="dataPills">
             <!-- Sẽ được sinh tự động bằng JS -->
           </div>
@@ -1979,7 +2084,7 @@
         
         <!-- Chọn số ngày sử dụng -->
         <div class="detail-section">
-          <h3 class="section-title">3. Chọn số ngày sử dụng</h3>
+          <h3 class="section-title" data-i18n="detail_step3">3. Chọn số ngày sử dụng</h3>
           <div class="pills-grid" id="dayPills">
             <!-- Sẽ được sinh tự động bằng JS -->
           </div>
@@ -1987,31 +2092,31 @@
 
         <!-- Thông số kỹ thuật -->
         <div class="detail-section">
-          <h3 class="section-title">Thông số kỹ thuật</h3>
+          <h3 class="section-title" data-i18n="specs_title">Thông số kỹ thuật</h3>
           <table class="specs-table">
             <tr>
-              <td>Nhà mạng đối tác</td>
+              <td data-i18n="spec_carrier">Nhà mạng đối tác</td>
               <td><strong id="specCarrier">Softbank / Docomo</strong></td>
             </tr>
             <tr>
-              <td>Tốc độ</td>
+              <td data-i18n="spec_speed">Tốc độ</td>
               <td><strong id="specSpeed">4G LTE / 5G cực nhanh</strong></td>
             </tr>
             <tr>
-              <td>Chia sẻ Hotspot</td>
-              <td><strong>Có hỗ trợ (Tethering OK)</strong></td>
+              <td data-i18n="spec_hotspot">Chia sẻ Hotspot</td>
+              <td><strong data-i18n="spec_hotspot_val">Có hỗ trợ (Tethering OK)</strong></td>
             </tr>
             <tr>
-              <td>Cuộc gọi & SMS</td>
-              <td><strong>Chỉ Data (Không kèm SĐT nghe gọi)</strong></td>
+              <td data-i18n="spec_calls">Cuộc gọi & SMS</td>
+              <td><strong data-i18n="spec_calls_val">Chỉ Data (Không kèm SĐT nghe gọi)</strong></td>
             </tr>
             <tr>
-              <td>Hình thức kích hoạt</td>
-              <td><strong>Tự động kết nối mạng tại nước sở tại</strong></td>
+              <td data-i18n="spec_activation">Hình thức kích hoạt</td>
+              <td><strong data-i18n="spec_activation_val">Tự động kết nối mạng tại nước sở tại</strong></td>
             </tr>
             <tr>
-              <td>Hạn kích hoạt</td>
-              <td><strong>90 ngày kể từ ngày mua hàng</strong></td>
+              <td data-i18n="spec_deadline">Hạn kích hoạt</td>
+              <td><strong data-i18n="spec_deadline_val">90 ngày kể từ ngày mua hàng</strong></td>
             </tr>
           </table>
         </div>
@@ -2020,32 +2125,32 @@
         <div class="detail-section">
           <div class="tabs-container">
             <div class="tab-headers">
-              <button class="tab-header-btn active" onclick="switchInfoTab(event, 'tabInstall')">Hướng dẫn cài đặt</button>
-              <button class="tab-header-btn" onclick="switchInfoTab(event, 'tabDevices')">Thiết bị hỗ trợ</button>
-              <button class="tab-header-btn" onclick="switchInfoTab(event, 'tabPolicy')">Chính sách hoàn tiền</button>
+              <button class="tab-header-btn active" onclick="switchInfoTab(event, 'tabInstall')" data-i18n="tab_install">Hướng dẫn cài đặt</button>
+              <button class="tab-header-btn" onclick="switchInfoTab(event, 'tabDevices')" data-i18n="tab_devices">Thiết bị hỗ trợ</button>
+              <button class="tab-header-btn" onclick="switchInfoTab(event, 'tabPolicy')" data-i18n="tab_policy">Chính sách hoàn tiền</button>
             </div>
             <div class="tab-bodies">
               <div id="tabInstall" class="tab-body-content active">
                 <ol class="info-list">
-                  <li><strong>Trước chuyến đi:</strong> Quét mã QR nhận qua email để thêm eSIM vào máy (cần có kết nối Internet/WiFi ổn định).</li>
-                  <li><strong>Thiết lập:</strong> Đặt nhãn cho eSIM là "VNPT eSIM" và tắt dòng này cho đến khi bạn khởi hành.</li>
-                  <li><strong>Khi hạ cánh nước ngoài:</strong> Bật dòng "VNPT eSIM" này lên và bật <strong>"Chuyển vùng dữ liệu" (Data Roaming)</strong> để kích hoạt kết nối.</li>
+                  <li data-i18n="inst_step1"><strong>Trước chuyến đi:</strong> Quét mã QR nhận qua email để thêm eSIM vào máy (cần có kết nối Internet/WiFi ổn định).</li>
+                  <li data-i18n="inst_step2"><strong>Thiết lập:</strong> Đặt nhãn cho eSIM là "VNPT eSIM" và tắt dòng này cho đến khi bạn khởi hành.</li>
+                  <li data-i18n="inst_step3"><strong>Khi hạ cánh nước ngoài:</strong> Bật dòng "VNPT eSIM" này lên và bật <strong>"Chuyển vùng dữ liệu" (Data Roaming)</strong> để kích hoạt kết nối.</li>
                 </ol>
               </div>
               <div id="tabDevices" class="tab-body-content">
-                <p style="font-size: 14.5px; line-height: 1.6; color: var(--ink);">eSIM tương thích với các thiết bị hỗ trợ công nghệ eSIM phổ biến:</p>
+                <p style="font-size: 14.5px; line-height: 1.6; color: var(--ink);" data-i18n="dev_lead">eSIM tương thích với các thiết bị hỗ trợ công nghệ eSIM phổ biến:</p>
                 <ul class="info-list" style="margin-top: 10px;">
-                  <li><strong>Apple iPhone:</strong> iPhone XR, XS trở lên (tất cả các dòng iPhone 11, 12, 13, 14, 15, 16...).</li>
-                  <li><strong>Samsung Galaxy:</strong> S20, S21, S22, S23, S24, Note 20, Fold & Flip các dòng.</li>
-                  <li><strong>Google Pixel:</strong> Pixel 3 trở lên.</li>
-                  <li><em>*Lưu ý: Thiết bị của bạn phải là phiên bản quốc tế không khóa mạng (máy không bị khóa lock mạng).</em></li>
+                  <li data-i18n="dev_apple"><strong>Apple iPhone:</strong> iPhone XR, XS trở lên (tất cả các dòng iPhone 11, 12, 13, 14, 15, 16...).</li>
+                  <li data-i18n="dev_samsung"><strong>Samsung Galaxy:</strong> S20, S21, S22, S23, S24, Note 20, Fold & Flip các dòng.</li>
+                  <li data-i18n="dev_pixel"><strong>Google Pixel:</strong> Pixel 3 trở lên.</li>
+                  <li data-i18n="dev_note"><em>*Lưu ý: Thiết bị của bạn phải là phiên bản quốc tế không khóa mạng (máy không bị khóa lock mạng).</em></li>
                 </ul>
               </div>
               <div id="tabPolicy" class="tab-body-content">
                 <ul class="info-list">
-                  <li>Hoàn tiền 100% nếu eSIM VNPT gặp lỗi kỹ thuật hệ thống từ nhà mạng và không thể kích hoạt/sử dụng ở nước sở tại.</li>
-                  <li>Không áp dụng chính sách hoàn trả đối với các thiết bị của khách hàng không hỗ trợ công nghệ eSIM hoặc máy Lock.</li>
-                  <li>Vui lòng liên hệ Hotline CSKH 24/7 ghi trên trang web để được kiểm tra và xử lý hoàn tiền nhanh trong 1-2 ngày làm việc.</li>
+                  <li data-i18n="policy_item1">Hoàn tiền 100% nếu eSIM VNPT gặp lỗi kỹ thuật hệ thống từ nhà mạng và không thể kích hoạt/sử dụng ở nước sở tại.</li>
+                  <li data-i18n="policy_item2">Không áp dụng chính sách hoàn trả đối với các thiết bị của khách hàng không hỗ trợ công nghệ eSIM hoặc máy Lock.</li>
+                  <li data-i18n="policy_item3">Vui lòng liên hệ Hotline CSKH 24/7 ghi trên trang web để được kiểm tra và xử lý hoàn tiền nhanh trong 1-2 ngày làm việc.</li>
                 </ul>
               </div>
             </div>
@@ -2056,7 +2161,7 @@
       <!-- Cột phải: Form thanh toán & Tóm tắt đơn hàng -->
       <div class="detail-right">
         <div class="order-summary-card">
-          <h3 class="card-title">Tóm tắt đơn hàng</h3>
+          <h3 class="card-title" data-i18n="summary_title">Tóm tắt đơn hàng</h3>
           
           <div class="summary-item-desc">
             <span class="flag-icon" id="summaryFlag">🇯🇵</span>
@@ -2067,12 +2172,12 @@
           </div>
 
           <div class="price-calc-row">
-            <span>Đơn giá gói</span>
+            <span data-i18n="summary_unit_price">Đơn giá gói</span>
             <span class="price-val" id="summaryUnitPrice">189.000₫</span>
           </div>
 
           <div class="quantity-selector">
-            <span>Số lượng</span>
+            <span data-i18n="summary_qty">Số lượng</span>
             <div class="qty-btn-group">
               <button onclick="changeQty(-1)">-</button>
               <span id="qtyVal">1</span>
@@ -2083,7 +2188,7 @@
           <hr class="summary-divider">
 
           <div class="total-row">
-            <span>Tổng cộng</span>
+            <span data-i18n="summary_total">Tổng cộng</span>
             <span class="total-price" id="summaryTotal">189.000₫</span>
           </div>
 
@@ -2093,11 +2198,11 @@
               <circle cx="20" cy="21" r="1"></circle>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
-            Thêm vào giỏ hàng
+            <span data-i18n="btn_add_to_cart">Thêm vào giỏ hàng</span>
           </button>
           
           <button class="btn btn-primary" onclick="addToCart(true)" style="width:100%; font-weight:700; height:50px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;">
-            Mua ngay
+            <span data-i18n="buy_now">Mua ngay</span>
           </button>
         </div>
       </div>
@@ -2115,7 +2220,7 @@
         <circle cx="20" cy="21" r="1"></circle>
         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
       </svg>
-      Giỏ hàng của bạn
+      <span data-i18n="cart_title">Giỏ hàng của bạn</span>
     </h3>
     <button class="close-cart-btn" onclick="closeCartDrawer()">&times;</button>
   </div>
@@ -2126,14 +2231,14 @@
   
   <div class="cart-drawer-footer" id="cartDrawerFooter">
     <div class="cart-total-row" id="cartShippingRow" style="display: none; margin-bottom: 8px;">
-      <span style="font-size: 13px; color: var(--ink-soft);">Phí vận chuyển:</span>
+      <span data-i18n="cart_shipping_fee" style="font-size: 13px; color: var(--ink-soft);">Phí vận chuyển:</span>
       <span style="font-size: 14px; font-weight: 700; color: var(--ink-soft);" id="cartShippingText">30.000₫</span>
     </div>
     <div class="cart-total-row">
-      <span>Tổng cộng (tạm tính):</span>
+      <span data-i18n="cart_total_est">Tổng cộng (tạm tính):</span>
       <span class="cart-total-price" id="cartTotalText">0₫</span>
     </div>
-    <button class="btn btn-primary btn-cart-checkout" onclick="openCheckout()">Tiếp tục thanh toán</button>
+    <button class="btn btn-primary btn-cart-checkout" onclick="openCheckout()" data-i18n="cart_btn_checkout">Tiếp tục thanh toán</button>
   </div>
 </div>
 
@@ -2146,35 +2251,35 @@
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        Quay lại Giỏ hàng
+        <span data-i18n="checkout_back">Quay lại Giỏ hàng</span>
       </button>
     </div>
     
     <div class="detail-grid">
       <!-- Cột trái: Review giỏ hàng -->
       <div class="detail-left">
-        <h2 class="detail-title" style="margin-bottom: 20px;">Thanh toán giỏ hàng</h2>
+        <h2 class="detail-title" style="margin-bottom: 20px;" data-i18n="checkout_title">Thanh toán giỏ hàng</h2>
         <div class="detail-section">
-          <h3 class="section-title">Xem lại sản phẩm</h3>
+          <h3 class="section-title" data-i18n="checkout_review_products">Xem lại sản phẩm</h3>
           <div class="checkout-items-list" id="checkoutItemsList">
             <!-- Items render dynamically -->
           </div>
         </div>
         
         <div class="detail-section">
-          <h3 class="section-title">Thông số & Lưu ý sử dụng</h3>
+          <h3 class="section-title" data-i18n="checkout_specs_notes">Thông số &amp; Lưu ý sử dụng</h3>
           <table class="specs-table">
             <tr>
-              <td>Công nghệ eSIM</td>
-              <td><strong>Chỉ Data di động, không hỗ trợ nhận cuộc gọi và SMS qua mạng di động truyền thống.</strong></td>
+              <td data-i18n="check_spec_tech">Công nghệ eSIM</td>
+              <td id="check_spec_tech_val" data-i18n="check_spec_tech_val"><strong>Chỉ Data di động, không hỗ trợ nhận cuộc gọi và SMS qua mạng di động truyền thống.</strong></td>
             </tr>
             <tr>
-              <td>Hình thức nhận hàng</td>
-              <td><strong>Mã QR kích hoạt sẽ được gửi ngay qua email của bạn sau khi thanh toán thành công.</strong></td>
+              <td data-i18n="check_spec_delivery">Hình thức nhận hàng</td>
+              <td id="check_spec_delivery_val" data-i18n="check_spec_delivery_val"><strong>Mã QR kích hoạt sẽ được gửi ngay qua email của bạn sau khi thanh toán thành công.</strong></td>
             </tr>
             <tr>
-              <td>Thời hạn cài đặt</td>
-              <td><strong>Tối đa 90 ngày kể từ ngày thanh toán đơn hàng.</strong></td>
+              <td data-i18n="check_spec_deadline">Thời hạn cài đặt</td>
+              <td id="check_spec_deadline_val" data-i18n="check_spec_deadline_val"><strong>Tối đa 90 ngày kể từ ngày thanh toán đơn hàng.</strong></td>
             </tr>
           </table>
         </div>
@@ -2183,22 +2288,22 @@
       <!-- Cột phải: Form thông tin & Thanh toán -->
       <div class="detail-right">
         <div class="order-summary-card" style="position: static;">
-          <h3 class="card-title">Thông tin giao dịch</h3>
+          <h3 class="card-title" data-i18n="checkout_tx_details">Thông tin giao dịch</h3>
           
           <div class="price-calc-row">
-            <span>Tạm tính giỏ hàng</span>
+            <span data-i18n="checkout_subtotal">Tạm tính giỏ hàng</span>
             <span class="price-val" id="checkoutSubtotal">0₫</span>
           </div>
 
           <div class="price-calc-row" id="shippingFeeRow" style="display: none;">
-            <span>Phí vận chuyển</span>
+            <span data-i18n="cart_shipping_fee">Phí vận chuyển</span>
             <span class="price-val" id="checkoutShippingFee">30.000₫</span>
           </div>
 
           <div class="promo-section">
             <div class="promo-input-group">
-              <input type="text" id="checkoutPromoInput" placeholder="Mã giảm giá (ví dụ: VNPTESIM10)">
-              <button onclick="applyCheckoutPromo()">Áp dụng</button>
+              <input type="text" id="checkoutPromoInput" data-i18n-placeholder="promo_placeholder" placeholder="Mã giảm giá (ví dụ: VNPTESIM10)">
+              <button onclick="applyCheckoutPromo()" data-i18n="promo_apply">Áp dụng</button>
             </div>
             <div class="promo-message" id="checkoutPromoMsg"></div>
           </div>
@@ -2207,41 +2312,41 @@
 
           <!-- Form thông tin khách hàng -->
           <div class="checkout-form">
-            <h4 class="form-section-title" id="checkoutFormTitle">Thông tin nhận eSIM (Mã QR)</h4>
+            <h4 class="form-section-title" id="checkoutFormTitle" data-i18n="form_title_esim">Thông tin nhận eSIM (Mã QR)</h4>
             <div class="form-group">
-              <label for="cartEmail">Email nhận mã QR *</label>
-              <input type="email" id="cartEmail" placeholder="email_cua_ban@gmail.com" required>
-              <span class="error-text" id="cartEmailError">Vui lòng nhập đúng định dạng email để nhận QR eSIM.</span>
+              <label for="cartEmail" id="cartEmailLabel"><span data-i18n="form_email">Email nhận mã QR</span> *</label>
+              <input type="email" id="cartEmail" data-i18n-placeholder="form_email_placeholder" placeholder="email_cua_ban@gmail.com" required>
+              <span class="error-text" id="cartEmailError" data-i18n="form_email_error">Vui lòng nhập đúng định dạng email để nhận QR eSIM.</span>
             </div>
             <div class="form-group">
-              <label for="cartName">Họ và tên *</label>
-              <input type="text" id="cartName" placeholder="Nguyen Van A" required>
-              <span class="error-text" id="cartNameError">Vui lòng điền đầy đủ họ và tên.</span>
+              <label for="cartName"><span data-i18n="form_name">Họ và tên</span> *</label>
+              <input type="text" id="cartName" data-i18n-placeholder="form_name_placeholder" placeholder="Nguyen Van A" required>
+              <span class="error-text" id="cartNameError" data-i18n="form_name_error">Vui lòng điền đầy đủ họ và tên.</span>
             </div>
             <div class="form-group">
-              <label for="cartPhone">Số điện thoại liên hệ *</label>
-              <input type="tel" id="cartPhone" placeholder="0912345678" required>
-              <span class="error-text" id="cartPhoneError">Vui lòng nhập số điện thoại liên hệ.</span>
+              <label for="cartPhone"><span data-i18n="form_phone">Số điện thoại liên hệ</span> *</label>
+              <input type="tel" id="cartPhone" data-i18n-placeholder="form_phone_placeholder" placeholder="0912345678" required>
+              <span class="error-text" id="cartPhoneError" data-i18n="form_phone_error">Vui lòng nhập số điện thoại liên hệ.</span>
             </div>
             
             <!-- Địa chỉ giao hàng khi mua SIM vật lý -->
             <div class="shipping-fields" id="shippingFields">
-              <h4 class="form-section-title" style="margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 20px;">Địa chỉ giao SIM vật lý</h4>
+              <h4 class="form-section-title" style="margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 20px;" data-i18n="form_shipping_title">Địa chỉ giao SIM vật lý</h4>
               <div class="form-group">
-                <label for="cartAddress">Địa chỉ nhận hàng (Số nhà, tên đường...) *</label>
-                <input type="text" id="cartAddress" placeholder="Ví dụ: 123 Đường Nguyễn Huệ">
-                <span class="error-text" id="cartAddressError">Vui lòng nhập địa chỉ giao hàng cụ thể.</span>
+                <label for="cartAddress"><span data-i18n="form_address">Địa chỉ nhận hàng (Số nhà, tên đường...)</span> *</label>
+                <input type="text" id="cartAddress" data-i18n-placeholder="form_address_placeholder" placeholder="Ví dụ: 123 Đường Nguyễn Huệ">
+                <span class="error-text" id="cartAddressError" data-i18n="form_address_error">Vui lòng nhập địa chỉ giao hàng cụ thể.</span>
               </div>
               <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
                 <div class="form-group" style="margin-bottom:0;">
-                  <label for="cartCity">Tỉnh / Thành phố *</label>
-                  <input type="text" id="cartCity" placeholder="Ví dụ: TP. Hồ Chí Minh">
-                  <span class="error-text" id="cartCityError">Vui lòng nhập Tỉnh/Thành phố.</span>
+                  <label for="cartCity"><span data-i18n="form_city">Tỉnh / Thành phố</span> *</label>
+                  <input type="text" id="cartCity" data-i18n-placeholder="form_city_placeholder" placeholder="Ví dụ: TP. Hồ Chí Minh">
+                  <span class="error-text" id="cartCityError" data-i18n="form_city_error">Vui lòng nhập Tỉnh/Thành phố.</span>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                  <label for="cartDistrict">Quận / Huyện *</label>
-                  <input type="text" id="cartDistrict" placeholder="Ví dụ: Quận 1">
-                  <span class="error-text" id="cartDistrictError">Vui lòng nhập Quận/Huyện.</span>
+                  <label for="cartDistrict"><span data-i18n="form_district">Quận / Huyện</span> *</label>
+                  <input type="text" id="cartDistrict" data-i18n-placeholder="form_district_placeholder" placeholder="Ví dụ: Quận 1">
+                  <span class="error-text" id="cartDistrictError" data-i18n="form_district_error">Vui lòng nhập Quận/Huyện.</span>
                 </div>
               </div>
             </div>
@@ -2251,14 +2356,14 @@
 
           <!-- Phương thức thanh toán -->
           <div class="payment-methods">
-            <h4 class="form-section-title">Phương thức thanh toán</h4>
+            <h4 class="form-section-title" data-i18n="payment_method">Phương thức thanh toán</h4>
             
             <label class="payment-method-item active" id="pm_cart_vietqr">
               <input type="radio" name="cartPaymentMethod" value="vietqr" checked onclick="selectCartPaymentMethod('vietqr')">
               <div class="pm-logo qr-logo">QR</div>
               <div class="pm-text">
-                <strong>Chuyển khoản Ngân hàng (VietQR)</strong>
-                <span>Quét mã VietQR chuyển khoản nhanh tự động</span>
+                <strong data-i18n="pm_vietqr">Chuyển khoản Ngân hàng (VietQR)</strong>
+                <span data-i18n="pm_vietqr_desc">Quét mã VietQR chuyển khoản nhanh tự động</span>
               </div>
             </label>
             
@@ -2266,8 +2371,8 @@
               <input type="radio" name="cartPaymentMethod" value="momo" onclick="selectCartPaymentMethod('momo')">
               <div class="pm-logo momo-logo">MoMo</div>
               <div class="pm-text">
-                <strong>Ví điện tử MoMo</strong>
-                <span>Thanh toán tự động siêu tốc qua ví MoMo</span>
+                <strong data-i18n="pm_momo">Ví điện tử MoMo</strong>
+                <span data-i18n="pm_momo_desc">Thanh toán tự động siêu tốc qua ví MoMo</span>
               </div>
             </label>
             
@@ -2275,23 +2380,23 @@
               <input type="radio" name="cartPaymentMethod" value="vnpay" onclick="selectCartPaymentMethod('vnpay')">
               <div class="pm-logo vnpay-logo">VNPay</div>
               <div class="pm-text">
-                <strong>Thẻ ATM / Visa / Mastercard / VNPay</strong>
-                <span>Cổng thanh toán ATM nội địa và Thẻ Quốc tế</span>
+                <strong data-i18n="pm_vnpay">Thẻ ATM / Visa / Mastercard / VNPay</strong>
+                <span data-i18n="pm_vnpay_desc">Cổng thanh toán ATM nội địa và Thẻ Quốc tế</span>
               </div>
             </label>
           </div>
 
           <div class="total-row">
-            <span>Tổng thanh toán</span>
+            <span data-i18n="total_payment">Tổng thanh toán</span>
             <span class="total-price" id="checkoutTotal">0₫</span>
           </div>
 
           <button class="btn btn-primary btn-submit-order" onclick="submitCartOrder()" id="btnSubmitCartOrder">
-            <span class="btn-text">Thanh toán ngay</span>
+            <span class="btn-text" data-i18n="btn_pay_now">Thanh toán ngay</span>
             <span class="loading-spinner"></span>
           </button>
           
-          <div class="secure-checkout-hint">
+          <div class="secure-checkout-hint" data-i18n="secure_payment_hint">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -2310,8 +2415,8 @@
     <button class="close-modal-btn" onclick="closePaymentModal()">&times;</button>
     <div class="payment-modal-header">
       <div class="spinner-pulse"></div>
-      <h3>Đang chờ thanh toán</h3>
-      <p>Vui lòng mở ứng dụng ngân hàng quét mã VietQR bên dưới để thực hiện chuyển khoản tự động.</p>
+      <h3 data-i18n="pm_modal_waiting">Đang chờ thanh toán</h3>
+      <p data-i18n="pm_modal_waiting_desc">Vui lòng mở ứng dụng ngân hàng quét mã VietQR bên dưới để thực hiện chuyển khoản tự động.</p>
     </div>
     
     <div class="payment-modal-body">
@@ -2325,51 +2430,51 @@
         
         <div class="payment-info-box">
           <div class="pay-info-row">
-            <span class="info-lbl">Ngân hàng</span>
+            <span class="info-lbl" data-i18n="pm_bank">Ngân hàng</span>
             <span class="info-val"><strong>Vietcombank (VCB)</strong></span>
           </div>
           <div class="pay-info-row">
-            <span class="info-lbl">Chủ tài khoản</span>
+            <span class="info-lbl" data-i18n="pm_acc_holder">Chủ tài khoản</span>
             <span class="info-val"><strong>CONG TY CONG NGHE VNPT</strong></span>
           </div>
           <div class="pay-info-row">
-            <span class="info-lbl">Số tài khoản</span>
+            <span class="info-lbl" data-i18n="pm_acc_num">Số tài khoản</span>
             <span class="info-val copyable" onclick="copyText('1900112233')">
               <strong id="modalAccount">1900112233</strong>
-              <span class="copy-hint">Copy</span>
+              <span class="copy-hint" data-i18n="pm_copy">Copy</span>
             </span>
           </div>
           <div class="pay-info-row">
-            <span class="info-lbl">Số tiền</span>
+            <span class="info-lbl" data-i18n="pm_amount">Số tiền</span>
             <span class="info-val copyable" onclick="copyText(document.getElementById('modalAmountRaw').innerText)">
               <strong class="text-orange" id="modalAmount">189.000₫</strong>
               <span id="modalAmountRaw" style="display:none">189000</span>
-              <span class="copy-hint">Copy</span>
+              <span class="copy-hint" data-i18n="pm_copy">Copy</span>
             </span>
           </div>
           <div class="pay-info-row">
-            <span class="info-lbl">Nội dung chuyển khoản</span>
+            <span class="info-lbl" data-i18n="pm_ref">Nội dung chuyển khoản</span>
             <span class="info-val copyable" onclick="copyText(document.getElementById('modalRef').innerText)">
               <strong class="text-blue" id="modalRef">VNPTESIM 82947</strong>
-              <span class="copy-hint">Copy</span>
+              <span class="copy-hint" data-i18n="pm_copy">Copy</span>
             </span>
           </div>
         </div>
       </div>
       
       <div class="payment-countdown">
-        <span>Đơn hàng của bạn sẽ hết hạn sau:</span>
+        <span data-i18n="pm_expire">Đơn hàng của bạn sẽ hết hạn sau:</span>
         <strong id="countdownTimer">09:59</strong>
       </div>
       
-      <div class="payment-instructions">
+      <div class="payment-instructions" id="paymentInstructions" data-i18n="pm_important_note">
         <p>⚠️ <strong>Quan trọng:</strong> Quý khách phải chuyển khoản đúng <strong>Số tiền</strong> và nhập chính xác <strong>Nội dung chuyển khoản</strong> để hệ thống VNPT tự động xác thực và gửi eSIM ngay sau 1-2 phút.</p>
       </div>
     </div>
     
     <div class="payment-modal-footer">
-      <button class="btn btn-outline btn-cancel-pm" onclick="closePaymentModal()">Hủy giao dịch</button>
-      <button class="btn btn-primary btn-confirm-pm" onclick="confirmPaymentFake()">Tôi đã chuyển khoản</button>
+      <button class="btn btn-outline btn-cancel-pm" onclick="closePaymentModal()" data-i18n="btn_cancel">Hủy giao dịch</button>
+      <button class="btn btn-primary btn-confirm-pm" onclick="confirmPaymentFake()" data-i18n="btn_confirm_payment">Tôi đã chuyển khoản</button>
     </div>
   </div>
 </div>
@@ -2384,8 +2489,8 @@
     </div>
     
     <div class="payment-modal-header">
-      <h2>Thanh Toán Thành Công!</h2>
-      <p>Hệ thống đã xác thực giao dịch chuyển khoản. Các mã QR cài đặt eSIM đã được gửi tới hòm thư: <strong id="successEmail">email_cua_ban@gmail.com</strong></p>
+      <h2 data-i18n="success_title">Thanh Toán Thành Công!</h2>
+      <p id="successDesc">Hệ thống đã xác thực giao dịch chuyển khoản. Các mã QR cài đặt eSIM đã được gửi tới hòm thư: <strong id="successEmail">email_cua_ban@gmail.com</strong></p>
     </div>
     
     <div class="success-body">
@@ -2393,13 +2498,13 @@
         <!-- Sinh động từ Javascript cho nhiều eSIM -->
       </div>
       
-      <div class="success-support-hint">
+      <div class="success-support-hint" id="successSupportHint" data-i18n="success_support_hint">
         <p>Cần hỗ trợ kỹ thuật cài đặt? Vui lòng gọi đường dây nóng: <strong>1800 1091</strong> (tiếng Việt, hỗ trợ 24/7).</p>
       </div>
     </div>
     
     <div class="payment-modal-footer" style="justify-content: center;">
-      <button class="btn btn-primary" onclick="closeAllModalsAndGoHome()" style="padding: 14px 44px; border-radius:999px;">Xong — Quay lại trang chủ</button>
+      <button class="btn btn-primary" onclick="closeAllModalsAndGoHome()" style="padding: 14px 44px; border-radius:999px;" data-i18n="success_btn_done">Xong — Quay lại trang chủ</button>
     </div>
   </div>
 </div>
@@ -2409,6 +2514,559 @@
 
 <!-- ===== SCRIPTS LOGIC ===== -->
 <script>
+const translations = {
+  vi: {
+    nav_destinations: "Điểm đến",
+    nav_how: "Hướng dẫn",
+    nav_support: "Hỗ trợ",
+    view_cart: "Xem giỏ hàng",
+    buy_now: "Mua ngay",
+    hero_title: "Kết nối toàn cầu<br>chỉ trong <span>2 phút</span>",
+    hero_lead: "eSIM VNPT phủ sóng hơn 150 quốc gia. Nhận mã QR qua email, kích hoạt tức thì — không cần đổi SIM vật lý, không lo roaming đắt đỏ.",
+    stat_countries: "Quốc gia & vùng lãnh thổ",
+    stat_activation_time: "2 phút",
+    stat_activation_desc: "Kích hoạt sau thanh toán",
+    stat_support: "Hỗ trợ tiếng Việt",
+    
+    dest_eyebrow: "Điểm đến phổ biến",
+    dest_title: "Chọn quốc gia bạn sắp ghé thăm",
+    search_placeholder: "Bạn sắp đi đâu? Nhập tên quốc gia (ví dụ: Pháp, Nhật Bản, Canada...)",
+    tab_all: "Tất cả",
+    tab_asia: "Châu Á",
+    tab_europe: "Châu Âu",
+    tab_america: "Châu Mỹ",
+    tab_oceania: "Châu Úc",
+    tab_africa: "Châu Phi",
+    btn_collapse: "Thu gọn danh sách",
+    btn_expand: "Xem thêm tất cả quốc gia →",
+    
+    steps_eyebrow: "Chỉ 3 bước",
+    steps_title: "Kết nối nhanh chóng, không cần ra cửa hàng",
+    step1_title: "Chọn gói & thanh toán",
+    step1_desc: "Chọn quốc gia hoặc khu vực, gói dung lượng phù hợp và thanh toán an toàn qua thẻ hoặc ví điện tử.",
+    step2_title: "Nhận mã QR qua email",
+    step2_desc: "Mã QR và hướng dẫn cài đặt được gửi ngay vào email của bạn, không phải chờ giao SIM vật lý.",
+    step3_title: "Quét mã & sử dụng",
+    step3_desc: "Quét mã QR bằng điện thoại, bật eSIM khi hạ cánh và kết nối ngay với mạng data tốc độ cao.",
+    
+    feat_eyebrow: "Vì sao chọn VNPT eSIM",
+    feat_title: "Nền tảng viễn thông bạn tin tưởng",
+    feat1_title: "Kích hoạt tức thì",
+    feat1_desc: "Nhận mã QR ngay sau khi thanh toán, sẵn sàng dùng chỉ trong 2 phút.",
+    feat2_title: "Phủ sóng 150+ quốc gia",
+    feat2_desc: "Một nền tảng, kết nối xuyên suốt hành trình của bạn ở mọi châu lục.",
+    feat3_title: "Bảo mật chuẩn VNPT",
+    feat3_desc: "Hạ tầng và quy trình bảo mật kế thừa từ nhà mạng viễn thông quốc gia.",
+    feat4_title: "Hỗ trợ 24/7",
+    feat4_desc: "Đội ngũ hỗ trợ tiếng Việt luôn sẵn sàng trước, trong và sau chuyến đi.",
+    
+    foot_desc: "Giải pháp eSIM & SIM quốc tế từ Tập đoàn VNPT — giữ bạn kết nối ở hơn 150 quốc gia trên toàn thế giới.",
+    foot_col1_title: "Sản phẩm",
+    foot_col1_item1: "Gói theo quốc gia",
+    foot_col1_item2: "Gói khu vực",
+    foot_col1_item3: "Gói toàn cầu",
+    foot_col1_item4: "Dành cho doanh nghiệp",
+    foot_col2_title: "Hỗ trợ",
+    foot_col2_item1: "Hướng dẫn cài đặt",
+    foot_col2_item2: "Câu hỏi thường gặp",
+    foot_col2_item3: "Kiểm tra thiết bị tương thích",
+    foot_col2_item4: "Liên hệ tổng đài",
+    foot_col3_title: "Công ty",
+    foot_col3_item1: "Về VNPT eSIM",
+    foot_col3_item2: "Điều khoản dịch vụ",
+    foot_col3_item3: "Chính sách bảo mật",
+    foot_col3_item4: "Tuyển dụng",
+    foot_copy: "© 2026 VNPT eSIM. Thuộc Tập đoàn Bưu chính Viễn thông Việt Nam.",
+    foot_proto: "Prototype — không phải trang chính thức",
+    
+    detail_back: "Quay lại Trang chủ",
+    detail_step1: "1. Chọn loại SIM",
+    sim_esim: "eSIM (Nhận qua Email)",
+    sim_physical: "SIM Vật lý (Giao tận nơi)",
+    detail_step2_plan: "2. Chọn loại gói cước",
+    plan_daily: "Data theo ngày",
+    plan_fixed: "Data trọn gói",
+    detail_step2_data: "2. Chọn dung lượng Data",
+    detail_step3: "3. Chọn số ngày sử dụng",
+    specs_title: "Thông số kỹ thuật",
+    spec_carrier: "Nhà mạng đối tác",
+    spec_speed: "Tốc độ",
+    spec_hotspot: "Chia sẻ Hotspot",
+    spec_hotspot_val: "Có hỗ trợ (Tethering OK)",
+    spec_calls: "Cuộc gọi & SMS",
+    spec_calls_val: "Chỉ Data (Không kèm SĐT nghe gọi)",
+    spec_activation: "Hình thức kích hoạt",
+    spec_activation_val: "Tự động kết nối mạng tại nước sở tại",
+    spec_deadline: "Hạn kích hoạt",
+    spec_deadline_val: "90 ngày kể từ ngày mua hàng",
+    tab_install: "Hướng dẫn cài đặt",
+    tab_devices: "Thiết bị hỗ trợ",
+    tab_policy: "Chính sách hoàn tiền",
+    inst_step1: "<strong>Trước chuyến đi:</strong> Quét mã QR nhận qua email để thêm eSIM vào máy (cần có kết nối Internet/WiFi ổn định).",
+    inst_step2: "<strong>Thiết lập:</strong> Đặt nhãn cho eSIM là \"VNPT eSIM\" và tắt dòng này cho đến khi bạn khởi hành.",
+    inst_step3: "<strong>Khi hạ cánh nước ngoài:</strong> Bật dòng \"VNPT eSIM\" này lên và bật <strong>\"Chuyển vùng dữ liệu\" (Data Roaming)</strong> để kích hoạt kết nối.",
+    dev_lead: "eSIM tương thích với các thiết bị hỗ trợ công nghệ eSIM phổ biến:",
+    dev_apple: "<strong>Apple iPhone:</strong> iPhone XR, XS trở lên (tất cả các dòng iPhone 11, 12, 13, 14, 15, 16...).",
+    dev_samsung: "<strong>Samsung Galaxy:</strong> S20, S21, S22, S23, S24, Note 20, Fold & Flip các dòng.",
+    dev_pixel: "<strong>Google Pixel:</strong> Pixel 3 trở lên.",
+    dev_note: "<em>*Lưu ý: Thiết bị của bạn phải là phiên bản quốc tế không khóa mạng (máy không bị khóa lock mạng).</em>",
+    policy_item1: "Hoàn tiền 100% nếu eSIM VNPT gặp lỗi kỹ thuật hệ thống từ nhà mạng và không thể kích hoạt/sử dụng ở nước sở tại.",
+    policy_item2: "Không áp dụng chính sách hoàn trả đối với các thiết bị của khách hàng không hỗ trợ công nghệ eSIM hoặc máy Lock.",
+    policy_item3: "Vui lòng liên hệ Hotline CSKH 24/7 ghi trên trang web để được kiểm tra và xử lý hoàn tiền nhanh trong 1-2 ngày làm việc.",
+    summary_title: "Tóm tắt đơn hàng",
+    summary_unit_price: "Package Unit Price",
+    summary_qty: "Số lượng",
+    summary_total: "Tổng cộng",
+    btn_add_to_cart: "Thêm vào giỏ hàng",
+    
+    cart_title: "Giỏ hàng của bạn",
+    cart_shipping_fee: "Phí vận chuyển:",
+    cart_total_est: "Tổng cộng (tạm tính):",
+    cart_btn_checkout: "Tiếp tục thanh toán",
+    cart_empty: "Giỏ hàng của bạn đang trống",
+    btn_continue_shopping: "Tiếp tục mua sắm",
+    cart_item_remove: "Xóa",
+    cart_toast_added: "Đã thêm vào giỏ hàng thành công!",
+    cart_alert_empty: "Giỏ hàng trống. Vui lòng thêm eSIM vào giỏ hàng trước.",
+    
+    checkout_back: "Quay lại Giỏ hàng",
+    checkout_title: "Thanh toán giỏ hàng",
+    checkout_review_products: "Xem lại sản phẩm",
+    checkout_specs_notes: "Thông số & Lưu ý sử dụng",
+    check_spec_tech: "Công nghệ eSIM",
+    check_spec_tech_val: "Chỉ Data di động, không hỗ trợ nhận cuộc gọi và SMS qua mạng di động truyền thống.",
+    check_spec_delivery: "Hình thức nhận hàng",
+    check_spec_delivery_val: "Mã QR kích hoạt sẽ được gửi ngay qua email của bạn sau khi thanh toán thành công.",
+    check_spec_deadline: "Thời hạn cài đặt",
+    check_spec_deadline_val: "Tối đa 90 ngày kể từ ngày thanh toán đơn hàng.",
+    checkout_tx_details: "Thông tin giao dịch",
+    checkout_subtotal: "Tạm tính giỏ hàng",
+    promo_placeholder: "Mã giảm giá (ví dụ: VNPTESIM10)",
+    promo_apply: "Áp dụng",
+    form_title_esim: "Thông tin nhận eSIM (Mã QR)",
+    form_title_physical: "Thông tin liên hệ & Giao nhận hàng",
+    form_email: "Email nhận mã QR",
+    form_email_physical: "Email nhận thông tin đơn hàng *",
+    form_email_placeholder: "email_cua_ban@gmail.com",
+    form_email_error: "Vui lòng nhập đúng định dạng email để nhận QR eSIM.",
+    form_name: "Họ và tên",
+    form_name_placeholder: "Nguyen Van A",
+    form_name_error: "Vui lòng điền đầy đủ họ và tên.",
+    form_phone: "Số điện thoại liên hệ",
+    form_phone_placeholder: "0912345678",
+    form_phone_error: "Vui lòng nhập số điện thoại liên hệ.",
+    form_shipping_title: "Địa chỉ giao SIM vật lý",
+    form_address: "Địa chỉ nhận hàng (Số nhà, tên đường...)",
+    form_address_placeholder: "Ví dụ: 123 Đường Nguyễn Huệ",
+    form_address_error: "Vui lòng nhập địa chỉ giao hàng cụ thể.",
+    form_city: "Tỉnh / Thành phố",
+    form_city_placeholder: "Ví dụ: TP. Hồ Chí Minh",
+    form_city_error: "Vui lòng nhập Tỉnh/Thành phố.",
+    form_district: "Quận / Huyện",
+    form_district_placeholder: "Ví dụ: Quận 1",
+    form_district_error: "Vui lòng nhập Quận/Huyện.",
+    payment_method: "Phương thức thanh toán",
+    pm_vietqr: "Chuyển khoản Ngân hàng (VietQR)",
+    pm_vietqr_desc: "Quét mã VietQR chuyển khoản nhanh tự động",
+    pm_momo: "Ví điện tử MoMo",
+    pm_momo_desc: "Thanh toán tự động siêu tốc qua ví MoMo",
+    pm_vnpay: "Thẻ ATM / Visa / Mastercard / VNPay",
+    pm_vnpay_desc: "Cổng thanh toán ATM nội địa và Thẻ Quốc tế",
+    total_payment: "Tổng thanh toán",
+    btn_pay_now: "Thanh toán ngay",
+    secure_payment_hint: "Bảo mật thanh toán chuẩn mã hóa SSL 256-bit",
+    
+    pm_modal_waiting: "Đang chờ thanh toán",
+    pm_modal_waiting_desc: "Vui lòng mở ứng dụng ngân hàng quét mã VietQR bên dưới để thực hiện chuyển khoản tự động.",
+    pm_bank: "Ngân hàng",
+    pm_acc_holder: "Chủ tài khoản",
+    pm_acc_num: "Số tài khoản",
+    pm_amount: "Số tiền",
+    pm_ref: "Nội dung chuyển khoản",
+    pm_copy: "Copy",
+    pm_expire: "Đơn hàng của bạn sẽ hết hạn sau:",
+    pm_important_note: "<p>⚠️ <strong>Quan trọng:</strong> Quý khách phải chuyển khoản đúng <strong>Số tiền</strong> và nhập chính xác <strong>Nội dung chuyển khoản</strong> để hệ thống VNPT tự động xác thực và gửi eSIM ngay sau 1-2 phút.</p>",
+    btn_cancel: "Hủy giao dịch",
+    btn_confirm_payment: "Tôi đã chuyển khoản",
+    
+    success_title: "Thanh Toán Thành Công!",
+    success_desc: "Hệ thống đã xác thực giao dịch chuyển khoản. Các mã QR cài đặt eSIM đã được gửi tới hòm thư: <strong id=\"successEmail\">{email}</strong>",
+    success_support_hint: "<p>Cần hỗ trợ kỹ thuật cài đặt? Vui lòng gọi đường dây nóng: <strong>1800 1091</strong> (tiếng Việt, hỗ trợ 24/7).</p>",
+    success_btn_done: "Xong — Quay lại trang chủ",
+    
+    // Dynamic JS texts
+    toast_copied: "Đã sao chép vào bộ nhớ tạm!",
+    promo_success_percent: "Áp dụng mã {code} thành công (Giảm {percent}%)!",
+    promo_success_fixed: "Áp dụng mã {code} thành công (Giảm {amount}₫)!",
+    promo_error: "Mã giảm giá không chính xác.",
+    checkout_error: "Lỗi khi mở trang thanh toán: ",
+    checkout_render_error: "Lỗi khi render thông tin thanh toán: ",
+    order_expired_alert: "Hết hạn thanh toán đơn hàng. Vui lòng tạo giao dịch mới.",
+    esim_qr_title: "eSIM {country} {index}",
+    physical_sim_title: "SIM Vật lý {country} {index}",
+    status_preparing: "Đang chuẩn bị hàng",
+    shipping_carrier_desc: "VNPost (Bưu điện Việt Nam)",
+    shipping_address_label: "Địa chỉ giao",
+    shipping_est_delivery: "Dự kiến giao hàng trong 1-3 ngày làm việc. Nhân viên bưu điện sẽ liên hệ qua SĐT: {phone}.",
+    destination_label: "Điểm đến",
+    plan_label: "Gói cước",
+    manual_lpa_label: "LPA String thủ công",
+    purchase_date_label: "Ngày mua",
+    
+    // Popular country names translation
+    country_japan: "Nhật Bản",
+    country_korea: "Hàn Quốc",
+    country_thailand: "Thái Lan",
+    country_singapore: "Singapore",
+    country_usa: "Mỹ",
+    country_uk: "Anh",
+    country_australia: "Úc",
+    country_europe: "Châu Âu",
+    country_vietnam: "Việt Nam",
+    country_china: "Trung Quốc",
+    country_taiwan: "Đài Loan",
+    country_hongkong: "Hồng Kông",
+    country_france: "Pháp",
+    country_germany: "Đức",
+    country_italy: "Ý",
+    country_spain: "Tây Ban Nha",
+    country_switzerland: "Thụy Sĩ",
+    country_canada: "Canada",
+    country_brazil: "Brazil"
+  },
+  en: {
+    nav_destinations: "Destinations",
+    nav_how: "How It Works",
+    nav_support: "Support",
+    view_cart: "View Cart",
+    buy_now: "Buy Now",
+    hero_title: "Global Connection<br>in just <span>2 minutes</span>",
+    hero_lead: "VNPT eSIM covers over 150 countries. Receive QR code via email, activate instantly — no physical SIM required, no expensive roaming.",
+    stat_countries: "Countries & Territories",
+    stat_activation_time: "2 mins",
+    stat_activation_desc: "Activation post-payment",
+    stat_support: "24/7 Support (Vietnamese/English)",
+    
+    dest_eyebrow: "Popular Destinations",
+    dest_title: "Select the country you are visiting",
+    search_placeholder: "Where are you going? Enter country name (e.g. France, Japan, Canada...)",
+    tab_all: "All",
+    tab_asia: "Asia",
+    tab_europe: "Europe",
+    tab_america: "Americas",
+    tab_oceania: "Oceania",
+    tab_africa: "Africa",
+    btn_collapse: "Collapse list",
+    btn_expand: "View all countries →",
+    
+    steps_eyebrow: "Only 3 steps",
+    steps_title: "Fast connection without visiting stores",
+    step1_title: "Select plan & pay",
+    step1_desc: "Choose the country or region, suitable data plan, and pay securely via card or e-wallet.",
+    step2_title: "Receive QR code via email",
+    step2_desc: "Your QR code and installation guide are sent instantly to your email, no waiting for a physical SIM.",
+    step3_title: "Scan & go",
+    step3_desc: "Scan the QR code with your phone, enable the eSIM upon landing, and connect to high-speed data.",
+    
+    feat_eyebrow: "Why choose VNPT eSIM",
+    feat_title: "The telecom platform you trust",
+    feat1_title: "Instant Activation",
+    feat1_desc: "Receive your QR code immediately after payment, ready to use in just 2 minutes.",
+    feat2_title: "150+ Countries Coverage",
+    feat2_desc: "One platform, connecting seamlessly across your journey in all continents.",
+    feat3_title: "VNPT-Standard Security",
+    feat3_desc: "Inherited security infrastructure and processes from the national telecom group.",
+    feat4_title: "24/7 Support",
+    feat4_desc: "Our support team is always ready to assist you before, during, and after your trip.",
+    
+    foot_desc: "Global eSIM & SIM solutions from VNPT — keeping you connected in 150+ countries worldwide.",
+    foot_col1_title: "Products",
+    foot_col1_item1: "Country Plans",
+    foot_col1_item2: "Regional Plans",
+    foot_col1_item3: "Global Plans",
+    foot_col1_item4: "For Enterprise",
+    foot_col2_title: "Support",
+    foot_col2_item1: "Installation Guide",
+    foot_col2_item2: "FAQs",
+    foot_col2_item3: "Check Compatibility",
+    foot_col2_item4: "Contact Hotline",
+    foot_col3_title: "Company",
+    foot_col3_item1: "About VNPT eSIM",
+    foot_col3_item2: "Terms of Service",
+    foot_col3_item3: "Privacy Policy",
+    foot_col3_item4: "Careers",
+    foot_copy: "© 2026 VNPT eSIM. Under Vietnam Posts and Telecommunications Group.",
+    foot_proto: "Prototype — not an official page",
+    
+    detail_back: "Back to Homepage",
+    detail_step1: "1. Select SIM Type",
+    sim_esim: "eSIM (Receive via Email)",
+    sim_physical: "Physical SIM (Delivery)",
+    detail_step2_plan: "2. Select Plan Type",
+    plan_daily: "Daily Data",
+    plan_fixed: "Fixed Data",
+    detail_step2_data: "2. Select Data Volume",
+    detail_step3: "3. Select Usage Days",
+    specs_title: "Technical Specs",
+    spec_carrier: "Partner Carrier",
+    spec_speed: "Speed",
+    spec_hotspot: "Hotspot Sharing",
+    spec_hotspot_val: "Supported (Tethering OK)",
+    spec_calls: "Calls & SMS",
+    spec_calls_val: "Data Only (No phone number included)",
+    spec_activation: "Activation Type",
+    spec_activation_val: "Automatically connects to local network",
+    spec_deadline: "Activation Deadline",
+    spec_deadline_val: "90 days from purchase date",
+    tab_install: "Installation Guide",
+    tab_devices: "Supported Devices",
+    tab_policy: "Refund Policy",
+    inst_step1: "<strong>Before your trip:</strong> Scan the QR code received via email to add the eSIM to your device (requires stable Internet/WiFi connection).",
+    inst_step2: "<strong>Setup:</strong> Label the eSIM as \"VNPT eSIM\" and keep this line turned off until you depart.",
+    inst_step3: "<strong>Upon landing abroad:</strong> Turn on this \"VNPT eSIM\" line and enable <strong>\"Data Roaming\"</strong> to activate your connection.",
+    dev_lead: "eSIM is compatible with devices supporting popular eSIM technology:",
+    dev_apple: "<strong>Apple iPhone:</strong> iPhone XR, XS or newer (all models iPhone 11, 12, 13, 14, 15, 16...).",
+    dev_samsung: "<strong>Samsung Galaxy:</strong> S20, S21, S22, S23, S24, Note 20, Fold & Flip series.",
+    dev_pixel: "<strong>Google Pixel:</strong> Pixel 3 or newer.",
+    dev_note: "<em>*Note: Your device must be an unlocked carrier-free international version.</em>",
+    policy_item1: "100% refund if the VNPT eSIM encounters a technical system issue from the carrier and cannot be activated/used in the destination country.",
+    policy_item2: "Refund policy does not apply to client devices that do not support eSIM technology or carrier-locked phones.",
+    policy_item3: "Please contact our 24/7 CSKH Hotline listed on the website for inspection and refund processing within 1-2 business days.",
+    summary_title: "Order Summary",
+    summary_unit_price: "Package Unit Price",
+    summary_qty: "Quantity",
+    summary_total: "Total",
+    btn_add_to_cart: "Add to Cart",
+    
+    cart_title: "Your Cart",
+    cart_shipping_fee: "Shipping Fee:",
+    cart_total_est: "Total (estimated):",
+    cart_btn_checkout: "Proceed to Checkout",
+    cart_empty: "Your cart is currently empty",
+    btn_continue_shopping: "Continue Shopping",
+    cart_item_remove: "Delete",
+    cart_toast_added: "Added to cart successfully!",
+    cart_alert_empty: "Your cart is empty. Please add an eSIM to cart first.",
+    
+    checkout_back: "Back to Cart",
+    checkout_title: "Cart Checkout",
+    checkout_review_products: "Review Products",
+    checkout_specs_notes: "Specs & Usage Notes",
+    check_spec_tech: "eSIM Technology",
+    check_spec_tech_val: "Mobile Data only, does not support traditional cellular calls and SMS.",
+    check_spec_delivery: "Delivery Method",
+    check_spec_delivery_val: "The activation QR code will be sent immediately to your email after successful payment.",
+    check_spec_deadline: "Installation Deadline",
+    check_spec_deadline_val: "Maximum 90 days from order payment date.",
+    checkout_tx_details: "Transaction Details",
+    checkout_subtotal: "Cart Subtotal",
+    promo_placeholder: "Promo Code (e.g. VNPTESIM10)",
+    promo_apply: "Apply",
+    form_title_esim: "eSIM Contact Info (QR Code)",
+    form_title_physical: "Contact & Shipping Info",
+    form_email: "Email for QR Code",
+    form_email_physical: "Email for Order Updates *",
+    form_email_placeholder: "your_email@gmail.com",
+    form_email_error: "Please enter a valid email address to receive the eSIM QR.",
+    form_name: "Full Name",
+    form_name_placeholder: "John Doe",
+    form_name_error: "Please enter your full name.",
+    form_phone: "Contact Phone Number",
+    form_phone_placeholder: "+84912345678",
+    form_phone_error: "Please enter your contact phone number.",
+    form_shipping_title: "Physical SIM Shipping Address",
+    form_address: "Shipping Address (Street, House No...)",
+    form_address_placeholder: "E.g. 123 Nguyen Hue Street",
+    form_address_error: "Please enter a specific shipping address.",
+    form_city: "City / Province",
+    form_city_placeholder: "E.g. Ho Chi Minh City",
+    form_city_error: "Please enter City / Province.",
+    form_district: "District",
+    form_district_placeholder: "E.g. District 1",
+    form_district_error: "Please enter District.",
+    payment_method: "Payment Method",
+    pm_vietqr: "Bank Transfer (VietQR)",
+    pm_vietqr_desc: "Scan VietQR for instant automatic bank transfer",
+    pm_momo: "MoMo E-wallet",
+    pm_momo_desc: "Automatic instant payment via MoMo app",
+    pm_vnpay: "ATM Card / Visa / Mastercard / VNPay",
+    pm_vnpay_desc: "Local ATM and International Card payment gateway",
+    total_payment: "Total Payment",
+    btn_pay_now: "Pay Now",
+    secure_payment_hint: "Secure payment with SSL 256-bit encryption standard",
+    
+    pm_modal_waiting: "Awaiting Payment",
+    pm_modal_waiting_desc: "Please open your banking app and scan the VietQR below to complete the transfer.",
+    pm_bank: "Bank",
+    pm_acc_holder: "Account Holder",
+    pm_acc_num: "Account Number",
+    pm_amount: "Amount",
+    pm_ref: "Transfer Details",
+    pm_copy: "Copy",
+    pm_expire: "Your order will expire in:",
+    pm_important_note: "<p>⚠️ <strong>Important:</strong> You must transfer the exact <strong>Amount</strong> and enter the correct <strong>Transfer Details</strong> for VNPT's system to verify and send the eSIM automatically within 1-2 minutes.</p>",
+    btn_cancel: "Cancel Transaction",
+    btn_confirm_payment: "I have transferred",
+    
+    success_title: "Payment Successful!",
+    success_desc: "The system has verified your transaction. The eSIM activation QR code(s) have been sent to: <strong id=\"successEmail\">{email}</strong>",
+    success_support_hint: "<p>Need installation support? Please call hotline: <strong>1800 1091</strong> (support in Vietnamese/English 24/7).</p>",
+    success_btn_done: "Done — Back to Homepage",
+    
+    // Dynamic JS texts
+    toast_copied: "Copied to clipboard!",
+    promo_success_percent: "Applied code {code} successfully ({percent}% Off)!",
+    promo_success_fixed: "Applied code {code} successfully ({amount}₫ Off)!",
+    promo_error: "Invalid promo code.",
+    checkout_error: "Error opening checkout: ",
+    checkout_render_error: "Error rendering checkout details: ",
+    order_expired_alert: "Order payment expired. Please create a new transaction.",
+    esim_qr_title: "eSIM {country} {index}",
+    physical_sim_title: "Physical SIM {country} {index}",
+    status_preparing: "Preparing shipment",
+    shipping_carrier_desc: "VNPost (Vietnam Post Office)",
+    shipping_address_label: "Shipping Address",
+    shipping_est_delivery: "Estimated delivery in 1-3 business days. Courier will contact via SĐT: {phone}.",
+    destination_label: "Destination",
+    plan_label: "Data Plan",
+    manual_lpa_label: "Manual LPA String",
+    purchase_date_label: "Purchase Date",
+    
+    // Popular country names translation
+    country_japan: "Japan",
+    country_korea: "South Korea",
+    country_thailand: "Thailand",
+    country_singapore: "Singapore",
+    country_usa: "USA",
+    country_uk: "UK",
+    country_australia: "Australia",
+    country_europe: "Europe",
+    country_vietnam: "Vietnam",
+    country_china: "China",
+    country_taiwan: "Taiwan",
+    country_hongkong: "Hong Kong",
+    country_france: "France",
+    country_germany: "Germany",
+    country_italy: "Italy",
+    country_spain: "Spain",
+    country_switzerland: "Switzerland",
+    country_canada: "Canada",
+    country_brazil: "Brazil"
+  }
+};
+
+let currentLang = 'vi';
+
+function t(key, defaultValue = '') {
+  if (translations[currentLang] && translations[currentLang][key]) {
+    return translations[currentLang][key];
+  }
+  return defaultValue || key;
+}
+
+function toggleLangDropdown(event) {
+  event.stopPropagation();
+  const dropdown = document.getElementById('langDropdown');
+  dropdown.classList.toggle('active');
+}
+
+function changeLanguage(lang, event) {
+  if (event) event.stopPropagation();
+  currentLang = lang;
+  
+  // Close dropdown
+  const dropdown = document.getElementById('langDropdown');
+  if (dropdown) dropdown.classList.remove('active');
+  
+  // Update selected flag and text in the trigger
+  const selectedFlag = document.getElementById('langSelectedFlag');
+  const selectedText = document.getElementById('langSelectedText');
+  if (selectedFlag) selectedFlag.src = lang === 'vi' ? 'https://flagcdn.com/vn.svg' : 'https://flagcdn.com/gb.svg';
+  if (selectedText) selectedText.innerText = lang === 'vi' ? 'VI' : 'EN';
+  
+  // Update select state of options
+  const optVi = document.getElementById('langOptVi');
+  const optEn = document.getElementById('langOptEn');
+  if (optVi && optEn) {
+    if (lang === 'vi') {
+      optVi.classList.add('selected');
+      optEn.classList.remove('selected');
+    } else {
+      optVi.classList.remove('selected');
+      optEn.classList.add('selected');
+    }
+  }
+  
+  updateLanguageUI();
+}
+
+// Close language dropdown when clicking outside
+window.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('langDropdown');
+  if (dropdown && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('active');
+  }
+});
+
+function updateLanguageUI() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.innerHTML = t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.getAttribute('data-i18n-title');
+    el.title = t(key);
+  });
+  
+  // Re-render components with translated dynamic data
+  renderHomepageCountries();
+  renderCartDrawer();
+  if (currentCountry) {
+    // Refresh product details
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSubtitle = document.getElementById('detailSubtitle');
+    const summaryTitle = document.getElementById('summaryTitle');
+    
+    const localizedCountryName = t('country_' + currentCountry.id, currentCountry.name);
+    const prefix = selectedSimType === 'esim' ? 'eSIM ' : (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ');
+    
+    if (detailTitle) detailTitle.innerText = prefix + localizedCountryName;
+    if (summaryTitle) summaryTitle.innerText = prefix + localizedCountryName;
+    if (detailSubtitle) {
+      detailSubtitle.innerText = currentLang === 'vi' 
+        ? 'Kết nối mạng ' + currentCountry.carrier + ' tốc độ cao tại ' + localizedCountryName + '.'
+        : 'Connect to ' + currentCountry.carrier + ' high-speed network in ' + localizedCountryName + '.';
+    }
+    
+    document.getElementById('summaryFlag').innerText = currentCountry.flag;
+    document.getElementById('detailFlag').innerText = currentCountry.flag;
+    document.getElementById('specCarrier').innerText = currentCountry.carrier + (selectedSimType === 'physical' ? (currentLang === 'vi' ? ' (Khay SIM vật lý)' : ' (Physical SIM tray)') : '');
+    document.getElementById('specSpeed').innerText = currentCountry.speed;
+    
+    // Refresh Sim type description
+    const desc = document.getElementById('simTypeDesc');
+    if (desc) {
+      if (selectedSimType === 'esim') {
+        desc.innerText = currentLang === 'vi' 
+          ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
+          : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
+      } else {
+        desc.innerText = currentLang === 'vi'
+          ? 'SIM Vật lý: Giao hàng tận nơi qua Bưu điện (VNPost) trong 1-3 ngày làm việc. Lắp thẻ SIM vào khay SIM điện thoại để kết nối.'
+          : 'Physical SIM: Delivery via Post (VNPost) in 1-3 business days. Insert the SIM card into your phone to connect.';
+      }
+    }
+    
+    renderDataOptions();
+    renderDaysOptions();
+    calculateTotal();
+  }
+}
+
 const countriesData = {
   japan: {
     id: 'japan',
@@ -2596,6 +3254,9 @@ let checkoutDiscountAmount = 0;
 let appliedCheckoutPromoCode = '';
 
 function formatVND(amount) {
+  if (currentLang === 'en') {
+    return amount.toLocaleString('en-US') + ' ₫';
+  }
   return amount.toLocaleString('vi-VN') + '₫';
 }
 
@@ -2678,15 +3339,20 @@ function openProductDetail(countryId) {
   // Update SIM Type tabs state
   document.getElementById('btnSimEsim').classList.add('active');
   document.getElementById('btnSimPhysical').classList.remove('active');
-  document.getElementById('simTypeDesc').innerText = 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.';
+  document.getElementById('simTypeDesc').innerText = currentLang === 'vi' 
+    ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
+    : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
 
   // Update country details UI
+  const localizedCountryName = t('country_' + currentCountry.id, currentCountry.name);
   document.getElementById('detailFlag').innerText = currentCountry.flag;
-  document.getElementById('detailTitle').innerText = 'eSIM ' + currentCountry.name;
-  document.getElementById('detailSubtitle').innerText = 'Kết nối mạng ' + currentCountry.carrier + ' tốc độ cao tại ' + currentCountry.name + '.';
+  document.getElementById('detailTitle').innerText = 'eSIM ' + localizedCountryName;
+  document.getElementById('detailSubtitle').innerText = currentLang === 'vi'
+    ? 'Kết nối mạng ' + currentCountry.carrier + ' tốc độ cao tại ' + localizedCountryName + '.'
+    : 'Connect to ' + currentCountry.carrier + ' high-speed network in ' + localizedCountryName + '.';
   
   document.getElementById('summaryFlag').innerText = currentCountry.flag;
-  document.getElementById('summaryTitle').innerText = 'eSIM ' + currentCountry.name;
+  document.getElementById('summaryTitle').innerText = 'eSIM ' + localizedCountryName;
   
   document.getElementById('specCarrier').innerText = currentCountry.carrier;
   document.getElementById('specSpeed').innerText = currentCountry.speed;
@@ -2720,17 +3386,21 @@ function setSimType(type) {
   if (type === 'esim') {
     btnEsim.classList.add('active');
     btnPhysical.classList.remove('active');
-    desc.innerText = 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.';
+    desc.innerText = currentLang === 'vi' 
+      ? 'eSIM: Nhận mã kích hoạt tức thì qua Email sau khi thanh toán. Không cần đổi SIM vật lý.'
+      : 'eSIM: Receive instant activation code via Email after payment. No physical SIM needed.';
     specCarrier.innerText = currentCountry.carrier;
-    summaryTitle.innerText = 'eSIM ' + currentCountry.name;
-    detailTitle.innerText = 'eSIM ' + currentCountry.name;
+    summaryTitle.innerText = 'eSIM ' + t('country_' + currentCountry.id, currentCountry.name);
+    detailTitle.innerText = 'eSIM ' + t('country_' + currentCountry.id, currentCountry.name);
   } else {
     btnEsim.classList.remove('active');
     btnPhysical.classList.add('active');
-    desc.innerText = 'SIM Vật lý: Giao hàng tận nơi qua Bưu điện (VNPost) trong 1-3 ngày làm việc. Lắp thẻ SIM vào khay SIM điện thoại để kết nối.';
-    specCarrier.innerText = currentCountry.carrier + ' (Khay SIM vật lý)';
-    summaryTitle.innerText = 'SIM Vật lý ' + currentCountry.name;
-    detailTitle.innerText = 'SIM Vật lý ' + currentCountry.name;
+    desc.innerText = currentLang === 'vi'
+      ? 'SIM Vật lý: Giao hàng tận nơi qua Bưu điện (VNPost) trong 1-3 ngày làm việc. Lắp thẻ SIM vào khay SIM điện thoại để kết nối.'
+      : 'Physical SIM: Delivery via Post (VNPost) in 1-3 business days. Insert the SIM card into your phone to connect.';
+    specCarrier.innerText = currentCountry.carrier + (currentLang === 'vi' ? ' (Khay SIM vật lý)' : ' (Physical SIM tray)');
+    summaryTitle.innerText = (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ') + t('country_' + currentCountry.id, currentCountry.name);
+    detailTitle.innerText = (currentLang === 'vi' ? 'SIM Vật lý ' : 'Physical SIM ') + t('country_' + currentCountry.id, currentCountry.name);
   }
   calculateTotal();
 }
@@ -2773,14 +3443,14 @@ function renderDataOptions() {
     
     const title = document.createElement('span');
     title.className = 'pill-title';
-    title.innerText = opt.name;
+    title.innerText = currentLang === 'vi' ? opt.name : opt.name.replace('/Ngày', '/Day').replace(' Trọn Gói', ' Fixed');
     
     const subtitle = document.createElement('span');
     subtitle.className = 'pill-subtitle';
     
     if (planType === 'daily') {
       const pricePerDay = Math.round(currentCountry.basePriceDaily * opt.multiplier);
-      subtitle.innerText = formatVND(pricePerDay) + '/ngày';
+      subtitle.innerText = formatVND(pricePerDay) + (currentLang === 'vi' ? '/ngày' : '/day');
     } else {
       subtitle.innerText = formatVND(opt.basePrice);
     }
@@ -2823,11 +3493,11 @@ function renderDaysOptions() {
     
     const title = document.createElement('span');
     title.className = 'pill-title';
-    title.innerText = days + ' Ngày';
+    title.innerText = days + (currentLang === 'vi' ? ' Ngày' : ' Days');
     
     const subtitle = document.createElement('span');
     subtitle.className = 'pill-subtitle';
-    subtitle.innerText = 'Thời hạn';
+    subtitle.innerText = currentLang === 'vi' ? 'Thời hạn' : 'Validity';
     
     item.appendChild(title);
     item.appendChild(subtitle);
@@ -2853,11 +3523,17 @@ function calculateTotal() {
   if (planType === 'daily') {
     const opt = currentCountry.dailyOptions.find(o => o.id === selectedDataOptionId);
     unitPrice = Math.round(currentCountry.basePriceDaily * opt.multiplier * selectedDays);
-    detailsText = `Data theo ngày: ${opt.name} - ${selectedDays} Ngày`;
+    const optName = currentLang === 'vi' ? opt.name : opt.name.replace('/Ngày', '/Day');
+    detailsText = currentLang === 'vi'
+      ? `Data theo ngày: ${optName} - ${selectedDays} Ngày`
+      : `Daily Data: ${optName} - ${selectedDays} Days`;
   } else {
     const opt = currentCountry.fixedOptions.find(o => o.id === selectedDataOptionId);
     unitPrice = opt.basePrice;
-    detailsText = `Data trọn gói: ${opt.name} (${selectedDays} Ngày)`;
+    const optName = currentLang === 'vi' ? opt.name : opt.name.replace(' Trọn Gói', ' Fixed');
+    detailsText = currentLang === 'vi'
+      ? `Data trọn gói: ${optName} (${selectedDays} Ngày)`
+      : `Fixed Data: ${optName} (${selectedDays} Days)`;
   }
   
   document.getElementById('summaryUnitPrice').innerText = formatVND(unitPrice);
@@ -2908,7 +3584,7 @@ function addToCart(checkoutImmediately) {
         cart.push(itemObj);
       }
       renderCartDrawer();
-      showToast('Đã thêm vào giỏ hàng thành công!');
+      showToast(t('cart_toast_added'));
       openCartDrawer();
     }
   } catch (err) {
@@ -2955,8 +3631,8 @@ function renderCartDrawer() {
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        <p>Giỏ hàng của bạn đang trống</p>
-        <button class="btn btn-outline" onclick="closeCartDrawer()" style="margin-top: 10px; border-radius:999px; cursor:pointer;">Tiếp tục mua sắm</button>
+        <p>${t('cart_empty')}</p>
+        <button class="btn btn-outline" onclick="closeCartDrawer()" style="margin-top: 10px; border-radius:999px; cursor:pointer;">${t('btn_continue_shopping')}</button>
       </div>
     `;
     document.getElementById('cartDrawerFooter').style.display = 'none';
@@ -2975,18 +3651,25 @@ function renderCartDrawer() {
     const card = document.createElement('div');
     card.className = 'cart-item-card';
     
+    const daysLabel = currentLang === 'vi' ? 'Ngày' : 'Days';
+    const localizedPlanName = currentLang === 'vi' ? item.dataOptionName : item.dataOptionName.replace('/Ngày', '/Day').replace(' Trọn Gói', ' Fixed');
+    
     const detailsDesc = item.planType === 'daily' 
-      ? `${item.dataOptionName} - ${item.days} Ngày`
-      : `${item.dataOptionName} (${item.days} Ngày)`;
+      ? `${localizedPlanName} - ${item.days} ${daysLabel}`
+      : `${localizedPlanName} (${item.days} ${daysLabel})`;
+      
+    const typeBadgeText = item.simType === 'physical'
+      ? (currentLang === 'vi' ? 'SIM Vật lý' : 'Physical SIM')
+      : 'eSIM';
       
     const typeBadge = item.simType === 'physical'
-      ? `<span style="background:var(--accent-orange); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px;">SIM Vật lý</span>`
-      : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px;">eSIM</span>`;
+      ? `<span style="background:var(--accent-orange); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`
+      : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`;
       
     card.innerHTML = `
       <div class="cart-item-flag">${item.flag}</div>
       <div class="cart-item-info">
-        <div class="cart-item-title" style="display:flex; align-items:center;">SIM ${item.countryName} ${typeBadge}</div>
+        <div class="cart-item-title" style="display:flex; align-items:center;">SIM ${t('country_' + item.countryId, item.countryName)} ${typeBadge}</div>
         <div class="cart-item-meta">${detailsDesc}</div>
         <div class="cart-item-price">${formatVND(item.unitPrice)}</div>
         <div class="cart-item-actions">
@@ -2995,7 +3678,7 @@ function renderCartDrawer() {
             <span>${item.quantity}</span>
             <button onclick="updateCartQty('${item.cartId}', 1)">+</button>
           </div>
-          <button class="cart-item-remove" onclick="removeFromCart('${item.cartId}')">Xóa</button>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.cartId}')">${t('cart_item_remove')}</button>
         </div>
       </div>
     `;
@@ -3034,7 +3717,7 @@ function openCheckout(isDirect) {
     }
     
     if (checkoutItems.length === 0) {
-      alert('Giỏ hàng trống. Vui lòng thêm eSIM vào giỏ hàng trước.');
+      alert(t('cart_alert_empty'));
       return;
     }
     
@@ -3085,12 +3768,12 @@ function openCheckout(isDirect) {
     
     if (hasPhysical) {
       if (shippingFields) shippingFields.style.display = 'block';
-      if (checkoutFormTitle) checkoutFormTitle.innerText = 'Thông tin liên hệ & Giao nhận hàng';
-      if (cartEmailLabel) cartEmailLabel.innerText = 'Email nhận thông tin đơn hàng *';
+      if (checkoutFormTitle) checkoutFormTitle.innerText = t('form_title_physical');
+      if (cartEmailLabel) cartEmailLabel.innerHTML = t('form_email_physical');
     } else {
       if (shippingFields) shippingFields.style.display = 'none';
-      if (checkoutFormTitle) checkoutFormTitle.innerText = 'Thông tin nhận eSIM (Mã QR)';
-      if (cartEmailLabel) cartEmailLabel.innerText = 'Email nhận mã QR *';
+      if (checkoutFormTitle) checkoutFormTitle.innerText = t('form_title_esim');
+      if (cartEmailLabel) cartEmailLabel.innerHTML = t('form_email') + ' *';
     }
     
     renderCheckout();
@@ -3102,7 +3785,7 @@ function openCheckout(isDirect) {
     }
     document.body.classList.add('detail-open');
   } catch (err) {
-    alert("Lỗi khi mở trang thanh toán: " + err.message);
+    alert(t('checkout_error') + err.message);
     console.error(err);
   }
 }
@@ -3131,18 +3814,25 @@ function renderCheckout() {
       const row = document.createElement('div');
       row.className = 'checkout-item-row';
       
+      const daysLabel = currentLang === 'vi' ? 'Ngày' : 'Days';
+      const localizedPlanName = currentLang === 'vi' ? item.dataOptionName : item.dataOptionName.replace('/Ngày', '/Day').replace(' Trọn Gói', ' Fixed');
+      
       const detailsDesc = item.planType === 'daily'
-        ? `${item.dataOptionName} - ${item.days} Ngày`
-        : `${item.dataOptionName} (${item.days} Ngày)`;
+        ? `${localizedPlanName} - ${item.days} ${daysLabel}`
+        : `${localizedPlanName} (${item.days} ${daysLabel})`;
+        
+      const typeBadgeText = item.simType === 'physical'
+        ? (currentLang === 'vi' ? 'SIM Vật lý' : 'Physical SIM')
+        : 'eSIM';
         
       const typeBadge = item.simType === 'physical'
-        ? `<span style="background:var(--accent-orange); color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:4px; margin-left:6px; display:inline-block;">SIM Vật lý</span>`
-        : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:4px; margin-left:6px; display:inline-block;">eSIM</span>`;
+        ? `<span style="background:var(--accent-orange); color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`
+        : `<span style="background:var(--vnpt-blue-700); color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:4px; margin-left:6px; display:inline-block;">${typeBadgeText}</span>`;
         
       row.innerHTML = `
         <div class="flag">${item.flag}</div>
         <div class="checkout-item-details">
-          <div class="checkout-item-name" style="display:flex; align-items:center;">SIM ${item.countryName} ${typeBadge}</div>
+          <div class="checkout-item-name" style="display:flex; align-items:center;">SIM ${t('country_' + item.countryId, item.countryName)} ${typeBadge}</div>
           <div class="checkout-item-spec">${detailsDesc}</div>
         </div>
         <div class="checkout-item-qtyprice">
@@ -3178,7 +3868,7 @@ function renderCheckout() {
     const totalEl = document.getElementById('checkoutTotal');
     if (totalEl) totalEl.innerText = formatVND(total);
   } catch (err) {
-    alert("Lỗi khi render thông tin thanh toán: " + err.message);
+    alert(t('checkout_render_error') + err.message);
     console.error(err);
   }
 }
@@ -3198,15 +3888,15 @@ function applyCheckoutPromo() {
   
   if (code === 'VNPTESIM10') {
     appliedCheckoutPromoCode = code;
-    msgEl.innerText = 'Áp dụng mã VNPTESIM10 thành công (Giảm 10%)!';
+    msgEl.innerText = t('promo_success_percent').replace('{code}', 'VNPTESIM10').replace('{percent}', '10');
     msgEl.className = 'promo-message success';
   } else if (code === 'WELCOME') {
     appliedCheckoutPromoCode = code;
-    msgEl.innerText = 'Áp dụng mã WELCOME thành công (Giảm 20.000₫)!';
+    msgEl.innerText = t('promo_success_fixed').replace('{code}', 'WELCOME').replace('{amount}', '20.000');
     msgEl.className = 'promo-message success';
   } else {
     appliedCheckoutPromoCode = '';
-    msgEl.innerText = 'Mã giảm giá không chính xác.';
+    msgEl.innerText = t('promo_error');
     msgEl.className = 'promo-message error';
   }
   
@@ -3350,7 +4040,7 @@ function startCountdown(duration) {
     if (--timer < 0) {
       clearInterval(countdownInterval);
       display.innerText = '00:00';
-      alert('Hết hạn thanh toán đơn hàng. Vui lòng tạo giao dịch mới.');
+      alert(t('order_expired_alert'));
       closePaymentModal();
     }
   }
@@ -3366,13 +4056,12 @@ function closePaymentModal() {
 
 function confirmPaymentFake() {
   const btn = document.querySelector('.btn-confirm-pm');
-  const originalText = btn.innerText;
   
   btn.innerHTML = '<span class="loading-spinner" style="display:block; position:static; margin:0 auto; width:18px; height:18px; border-width:2.5px;"></span>';
   btn.style.pointerEvents = 'none';
   
   setTimeout(() => {
-    btn.innerText = originalText;
+    btn.innerText = t('btn_confirm_payment');
     btn.style.pointerEvents = 'auto';
     
     closePaymentModal();
@@ -3382,13 +4071,14 @@ function confirmPaymentFake() {
 
 function openSuccessModal() {
   const email = document.getElementById('cartEmail').value;
-  document.getElementById('successEmail').innerText = email;
+  const descEl = document.getElementById('successDesc');
+  descEl.innerHTML = t('success_desc').replace('{email}', email);
   
   const grid = document.getElementById('successEsimGrid');
   grid.innerHTML = '';
   
   const now = new Date();
-  const dateStr = now.toLocaleString('vi-VN');
+  const dateStr = now.toLocaleString(currentLang === 'vi' ? 'vi-VN' : 'en-US');
   
   checkoutItems.forEach(item => {
     for (let i = 0; i < item.quantity; i++) {
@@ -3398,26 +4088,33 @@ function openSuccessModal() {
         const randomTracking = 'VNPS' + Math.floor(10000000 + Math.random() * 90000000) + 'VN';
         qrCard.className = 'physical-sim-card';
         
+        const localizedCountryName = t('country_' + item.countryId, item.countryName);
+        const trackingCopyText = currentLang === 'vi' ? '(Click để copy)' : '(Click to copy)';
+        
         qrCard.innerHTML = `
           <div class="delivery-status">
             <span class="delivery-icon">🚚</span>
-            <strong>SIM Vật lý ${item.countryName} ${item.quantity > 1 ? `(#${i + 1})` : ''}</strong>
+            <strong>${t('physical_sim_title').replace('{country}', localizedCountryName).replace('{index}', item.quantity > 1 ? `(#${i + 1})` : '')}</strong>
           </div>
           <div class="delivery-details">
-            <p><strong>Trạng thái:</strong> <span style="color:var(--accent-orange); font-weight:700;">Đang chuẩn bị hàng</span></p>
-            <p><strong>Đơn vị vận chuyển:</strong> VNPost (Bưu điện Việt Nam)</p>
-            <p><strong>Mã vận đơn:</strong> <code onclick="copyText(this.innerText)">${randomTracking}</code> <span style="font-size:11px; color:var(--ink-soft); font-weight:normal;">(Click để copy)</span></p>
-            <p><strong>Địa chỉ giao:</strong> ${document.getElementById('cartAddress').value.trim()}, ${document.getElementById('cartDistrict').value.trim()}, ${document.getElementById('cartCity').value.trim()}</p>
-            <p style="font-size:11.5px; color:var(--ink-soft); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px;">Dự kiến giao hàng trong 1-3 ngày làm việc. Nhân viên bưu điện sẽ liên hệ qua SĐT: ${document.getElementById('cartPhone').value.trim()}.</p>
+            <p><strong>${currentLang === 'vi' ? 'Trạng thái' : 'Status'}:</strong> <span style="color:var(--accent-orange); font-weight:700;">${t('status_preparing')}</span></p>
+            <p><strong>${currentLang === 'vi' ? 'Đơn vị vận chuyển' : 'Carrier'}:</strong> ${t('shipping_carrier_desc')}</p>
+            <p><strong>${currentLang === 'vi' ? 'Mã vận đơn' : 'Tracking Number'}:</strong> <code onclick="copyText(this.innerText)">${randomTracking}</code> <span style="font-size:11px; color:var(--ink-soft); font-weight:normal;">${trackingCopyText}</span></p>
+            <p><strong>${t('shipping_address_label')}:</strong> ${document.getElementById('cartAddress').value.trim()}, ${document.getElementById('cartDistrict').value.trim()}, ${document.getElementById('cartCity').value.trim()}</p>
+            <p style="font-size:11.5px; color:var(--ink-soft); margin-top:6px; border-top:1px dashed var(--line); padding-top:6px;">${t('shipping_est_delivery').replace('{phone}', document.getElementById('cartPhone').value.trim())}</p>
           </div>
         `;
       } else {
         const randomCode = Math.floor(10000000 + Math.random() * 90000000);
         qrCard.className = 'esim-qr-card';
         
+        const localizedCountryName = t('country_' + item.countryId, item.countryName);
+        const daysLabel = currentLang === 'vi' ? 'Ngày' : 'Days';
+        const localizedPlanName = currentLang === 'vi' ? item.dataOptionName : item.dataOptionName.replace('/Ngày', '/Day').replace(' Trọn Gói', ' Fixed');
+        
         qrCard.innerHTML = `
           <h4 style="margin-bottom:12px; font-size:14px; font-weight:700; color:var(--vnpt-blue-900);">
-            eSIM ${item.countryName} ${item.quantity > 1 ? `(#${i + 1})` : ''}
+            ${t('esim_qr_title').replace('{country}', localizedCountryName).replace('{index}', item.quantity > 1 ? `(#${i + 1})` : '')}
           </h4>
           <div class="esim-qr-image-wrapper">
             <div class="esim-qr-code">
@@ -3425,10 +4122,10 @@ function openSuccessModal() {
             </div>
           </div>
           <div class="esim-details-box">
-            <p><strong>Điểm đến:</strong> ${item.flag} ${item.countryName}</p>
-            <p><strong>Gói cước:</strong> ${item.dataOptionName} - ${item.days} Ngày</p>
-            <p><strong>LPA String thủ công:</strong> <code onclick="copyText(this.innerText)">LPA:1$vnpt.prod-dp.com$VNPT-${item.countryId.toUpperCase()}-${randomCode}</code></p>
-            <p style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">Ngày mua: ${dateStr}</p>
+            <p><strong>${t('destination_label')}:</strong> ${item.flag} ${localizedCountryName}</p>
+            <p><strong>${t('plan_label')}:</strong> ${localizedPlanName} - ${item.days} ${daysLabel}</p>
+            <p><strong>${t('manual_lpa_label')}:</strong> <code onclick="copyText(this.innerText)">LPA:1$vnpt.prod-dp.com$VNPT-${item.countryId.toUpperCase()}-${randomCode}</code></p>
+            <p style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">${t('purchase_date_label')}: ${dateStr}</p>
           </div>
         `;
       }
@@ -3453,7 +4150,7 @@ function closeAllModalsAndGoHome() {
 
 function copyText(text) {
   navigator.clipboard.writeText(text).then(() => {
-    showToast('Đã sao chép vào bộ nhớ tạm!');
+    showToast(t('toast_copied'));
   }).catch(err => {
     const textarea = document.createElement('textarea');
     textarea.value = text;
@@ -3461,7 +4158,7 @@ function copyText(text) {
     textarea.select();
     try {
       document.execCommand('copy');
-      showToast('Đã sao chép vào bộ nhớ tạm!');
+      showToast(t('toast_copied'));
     } catch (e) {
       console.error(e);
     }
@@ -3793,7 +4490,7 @@ function renderHomepageCountries() {
       } else {
         expandContainer.style.display = 'block';
         const btn = document.getElementById('btnHomepageExpand');
-        if (btn) btn.innerText = 'Thu gọn danh sách';
+        if (btn) btn.innerText = t('btn_collapse');
       }
     }
   } else {
@@ -3803,14 +4500,14 @@ function renderHomepageCountries() {
     if (expandContainer) {
       expandContainer.style.display = 'block';
       const btn = document.getElementById('btnHomepageExpand');
-      if (btn) btn.innerText = 'Xem thêm tất cả quốc gia →';
+      if (btn) btn.innerText = t('btn_expand');
     }
   }
   
   if (listToRender.length === 0) {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--ink-soft); font-weight: 500;">
-        Không tìm thấy quốc gia phù hợp. Vui lòng thử từ khóa khác.
+        ${currentLang === 'vi' ? 'Không tìm thấy quốc gia phù hợp. Vui lòng thử từ khóa khác.' : 'No matching country found. Please try another keyword.'}
       </div>
     `;
     return;
@@ -3821,12 +4518,16 @@ function renderHomepageCountries() {
     card.className = 'dest-card';
     card.onclick = () => openProductDetail(c.id);
     
-    const displayTitle = c.id === 'europe' ? 'Châu Âu (39 nước)' : c.name;
+    const displayTitle = c.id === 'europe' 
+      ? (currentLang === 'vi' ? 'Châu Âu (39 nước)' : 'Europe (39 countries)') 
+      : t('country_' + c.id, c.name);
+      
+    const displayPrice = currentLang === 'vi' ? c.price : c.price.replace('Từ ', 'From ').replace('₫', ' ₫');
     
     card.innerHTML = `
       <div class="flag">${c.flag}</div>
       <h4>${displayTitle}</h4>
-      <div class="price">${c.price}</div>
+      <div class="price">${displayPrice}</div>
     `;
     container.appendChild(card);
   });
