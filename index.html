@@ -146,9 +146,6 @@
                 display: flex;
                 gap: 36px;
             }
-            body.detail-open .navlinks {
-                display: none !important;
-            }
             .navlinks a {
                 font-size: 15px;
                 font-weight: 500;
@@ -2605,11 +2602,24 @@
                     />
                 </div>
                 <nav class="navlinks">
-                    <a href="#destinations" data-i18n="nav_destinations"
+                    <a
+                        href="#destinations"
+                        onclick="navigateToSection(event, 'destinations')"
+                        data-i18n="nav_destinations"
                         >Điểm đến</a
                     >
-                    <a href="#how" data-i18n="nav_how">Hướng dẫn</a>
-                    <a href="#support" data-i18n="nav_support">Hỗ trợ</a>
+                    <a
+                        href="#how"
+                        onclick="navigateToSection(event, 'how')"
+                        data-i18n="nav_how"
+                        >Hướng dẫn</a
+                    >
+                    <a
+                        href="#support"
+                        onclick="navigateToSection(event, 'support')"
+                        data-i18n="nav_support"
+                        >Hỗ trợ</a
+                    >
                 </nav>
                 <div class="nav-actions">
                     <!-- Language Dropdown Selector -->
@@ -6361,6 +6371,17 @@
                 closeCheckout();
                 closeProductDetail();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function navigateToSection(event, id) {
+                event.preventDefault();
+                closeCheckout();
+                closeProductDetail();
+                closeCartDrawer();
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
             }
 
             function setSimType(type) {
